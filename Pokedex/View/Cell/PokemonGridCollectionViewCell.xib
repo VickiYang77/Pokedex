@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="PokemonGridCell" reuseIdentifier="PokemonGridCell" id="7T7-75-zWT" userLabel="PokemonGridCell" customClass="PokemonCollectionViewCell" customModule="Pokedex" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="117" height="149"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="117" height="149"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qtH-s3-XfX">
+                        <rect key="frame" x="28.666666666666671" y="8" width="60" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="qtH-s3-XfX" secondAttribute="height" multiplier="1:1" id="XOA-qx-zK6"/>
+                            <constraint firstAttribute="width" constant="60" id="Zy5-Cw-let"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4NT-Wf-Aib" userLabel="idLabel">
+                        <rect key="frame" x="43" y="76" width="31" height="14.333333333333329"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Qk-Tm-gvw" userLabel="nameLabel">
+                        <rect key="frame" x="37.333333333333329" y="94.333333333333329" width="42.333333333333329" height="19.333333333333329"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZKH-2H-du0" userLabel="favoriteButton">
+                        <rect key="frame" x="98" y="8" width="15" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="15" id="QkN-6O-f7E"/>
+                            <constraint firstAttribute="width" secondItem="ZKH-2H-du0" secondAttribute="height" multiplier="1:1" id="meb-jI-1dL"/>
+                        </constraints>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="star" catalog="system">
+                            <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage"/>
+                        </buttonConfiguration>
+                        <connections>
+                            <action selector="favoriteBtnTapped:" destination="7T7-75-zWT" eventType="touchUpInside" id="IrI-oz-nKL"/>
+                        </connections>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lck-VV-9Sv" userLabel="typesLabel">
+                        <rect key="frame" x="40.666666666666664" y="117.66666666666667" width="35.999999999999993" height="17.000000000000014"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="Wl4-dR-rB8"/>
+            <color key="backgroundColor" red="0.53333333329999999" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="4NT-Wf-Aib" firstAttribute="centerX" secondItem="7T7-75-zWT" secondAttribute="centerX" id="3li-N9-gFz"/>
+                <constraint firstItem="qtH-s3-XfX" firstAttribute="top" secondItem="7T7-75-zWT" secondAttribute="top" constant="8" id="711-4O-JDq"/>
+                <constraint firstItem="4NT-Wf-Aib" firstAttribute="top" secondItem="qtH-s3-XfX" secondAttribute="bottom" constant="8" id="7qi-H3-62d"/>
+                <constraint firstAttribute="trailing" secondItem="ZKH-2H-du0" secondAttribute="trailing" constant="4" id="BSc-Ss-TqH"/>
+                <constraint firstItem="1Qk-Tm-gvw" firstAttribute="top" secondItem="4NT-Wf-Aib" secondAttribute="bottom" constant="4" id="Gg4-g8-kZ8"/>
+                <constraint firstItem="1Qk-Tm-gvw" firstAttribute="centerX" secondItem="7T7-75-zWT" secondAttribute="centerX" id="K5M-Fd-ydS"/>
+                <constraint firstItem="Lck-VV-9Sv" firstAttribute="top" secondItem="1Qk-Tm-gvw" secondAttribute="bottom" constant="4" id="doQ-wi-URc"/>
+                <constraint firstItem="Lck-VV-9Sv" firstAttribute="centerX" secondItem="7T7-75-zWT" secondAttribute="centerX" id="l5U-r1-L6m"/>
+                <constraint firstItem="qtH-s3-XfX" firstAttribute="centerX" secondItem="7T7-75-zWT" secondAttribute="centerX" id="oMB-jh-tpS"/>
+                <constraint firstItem="ZKH-2H-du0" firstAttribute="top" secondItem="qtH-s3-XfX" secondAttribute="top" id="sgs-tH-0KY"/>
+            </constraints>
+            <size key="customSize" width="117" height="149"/>
+            <connections>
+                <outlet property="favoriteButton" destination="ZKH-2H-du0" id="7sX-cN-DOi"/>
+                <outlet property="idLabel" destination="4NT-Wf-Aib" id="Jdm-OQ-jeT"/>
+                <outlet property="imageView" destination="qtH-s3-XfX" id="eO2-2S-h3W"/>
+                <outlet property="nameLabel" destination="1Qk-Tm-gvw" id="qwH-gT-5tV"/>
+                <outlet property="typesLabel" destination="Lck-VV-9Sv" id="pWi-Sf-ele"/>
+            </connections>
+            <point key="canvasLocation" x="43.511450381679388" y="53.87323943661972"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="star" catalog="system" width="128" height="116"/>
+    </resources>
+</document>
