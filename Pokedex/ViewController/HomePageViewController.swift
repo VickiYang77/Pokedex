@@ -7,12 +7,12 @@
 
 import UIKit
 
-struct Pokemon {
-    let id: Int
-    let name: String
-    let types: [String]
-    let thumbnailURL: URL
-}
+//struct Pokemon {
+//    let id: Int
+//    let name: String
+//    let types: [String]
+//    let thumbnailURL: URL
+//}
 
 class HomePageViewController: UIViewController {
 
@@ -22,11 +22,14 @@ class HomePageViewController: UIViewController {
     }
     
     private var collectionView: UICollectionView!
-    private var pokemons: [Pokemon] = []
+    private var pokemons: [PokemonModel] = []
     private var favoritePokemons: [Int: Bool] = [:]
-    private var filteredPokemons: [Pokemon] = []
+    private var filteredPokemons: [PokemonModel] = []
     private var isFilteringFavorites = false
     private var viewMode: ViewMode = .list
+    private var offset = 0
+    private let limit = 20
+    private let baseURL = "https://pokeapi.co/api/v2/pokemon"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +45,6 @@ class HomePageViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        
         // 註冊兩種不同的cell
         let listNib = UINib(nibName: "PokemonListCollectionViewCell", bundle: nil)
         collectionView.register(listNib, forCellWithReuseIdentifier: "PokemonListCell")
@@ -50,7 +52,6 @@ class HomePageViewController: UIViewController {
         let gridNib = UINib(nibName: "PokemonGridCollectionViewCell", bundle: nil)
         collectionView.register(gridNib, forCellWithReuseIdentifier: "PokemonGridCell")
         
-//        collectionView.register(PokemonCollectionViewCell.self, forCellWithReuseIdentifier: "PokemonCell")
         view.addSubview(collectionView)
     }
     
@@ -62,18 +63,63 @@ class HomePageViewController: UIViewController {
     }
     
     private func loadPokemons() {
-        // 假設從API獲取數據
-        // 這裡簡化為本地生成
-        for i in 1...30 {
-            let pokemon = Pokemon(
-                id: i,
-                name: "Pokemon \(i)",
-                types: ["Type1", "Type2"],
-                thumbnailURL: URL(string: "https://example.com/\(i).png")!
-            )
-            pokemons.append(pokemon)
+        let urlString = "\(baseURL)?limit=\(limit)&offset=\(offset)"
+        guard let url = URL(string: urlString) else { return }
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self, let data = data, error == nil else { return }
+            
+            do {
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(PokemonResponse.self, from: data)
+                
+                let dispatchGroup = DispatchGroup()
+                
+                for entry in response.results {
+                    dispatchGroup.enter()
+                    self.fetchPokemonDetails(from: entry.url) { pokemon in
+                        if let pokemon = pokemon {
+                            self.pokemons.append(pokemon)
+                        }
+                        dispatchGroup.leave()
+                    }
+                }
+                
+                dispatchGroup.notify(queue: .main) {
+                    self.offset += self.limit
+                    self.pokemons.sort(by: { $0.id < $1.id })
+                    self.collectionView.reloadData()
+                }
+                
+            } catch {
+                print("Failed to decode JSON: \(error)")
+            }
         }
-        collectionView.reloadData()
+        task.resume()
+    }
+    
+    private func fetchPokemonDetails(from url: String, completion: @escaping (PokemonModel?) -> Void) {
+        guard let url = URL(string: url) else {
+            completion(nil)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                completion(nil)
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let pokemon = try decoder.decode(PokemonModel.self, from: data)
+                completion(pokemon)
+            } catch {
+                print("Failed to decode Pokemon details: \(error)")
+                completion(nil)
+            }
+        }
+        task.resume()
     }
     
     @objc private func toggleViewMode() {
@@ -131,7 +177,7 @@ extension HomePageViewController: UICollectionViewDelegate {
 }
 
 extension HomePageViewController: PokemonCollectionViewCellDelegate {
-    func didToggleFavorite(for pokemon: Pokemon) {
+    func didToggleFavorite(for pokemon: PokemonModel) {
         print("vvv_\(pokemon.name)")
     }
 }

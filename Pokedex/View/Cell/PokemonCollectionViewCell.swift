@@ -8,7 +8,7 @@
 import UIKit
 
 protocol PokemonCollectionViewCellDelegate: AnyObject {
-    func didToggleFavorite(for pokemon: Pokemon)
+    func didToggleFavorite(for pokemon: PokemonModel)
 }
 
 class PokemonCollectionViewCell: UICollectionViewCell {
@@ -19,7 +19,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var favoriteButton: UIButton!
     
     weak var delegate: PokemonCollectionViewCellDelegate?
-    private var pokemon: Pokemon?
+    private var pokemon: PokemonModel?
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -29,7 +29,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         imageView.image = nil
     }
     
-    func configure(with pokemon: Pokemon) {
+    func configure(with pokemon: PokemonModel) {
         self.pokemon = pokemon
         idLabel.text = "#\(pokemon.id)"
         nameLabel.text = pokemon.name
