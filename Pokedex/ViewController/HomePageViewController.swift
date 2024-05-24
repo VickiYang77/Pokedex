@@ -178,7 +178,8 @@ extension HomePageViewController: UICollectionViewDelegate {
 
 extension HomePageViewController: PokemonCollectionViewCellDelegate {
     func didToggleFavorite(for pokemon: PokemonModel) {
-        print("vvv_\(pokemon.name)")
+        let UserDefaultFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
+        print("vvv_\(UserDefaultFavorite)")
     }
 }
 

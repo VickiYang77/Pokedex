@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol PokemonCollectionViewCellDelegate: AnyObject {
     func didToggleFavorite(for pokemon: PokemonModel)
@@ -19,10 +20,11 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var favoriteButton: UIButton!
     
     weak var delegate: PokemonCollectionViewCellDelegate?
-    private var pokemon: PokemonModel?
+    private var pokemon: PokemonModel!
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        pokemon = PokemonModel()
         idLabel.text = ""
         nameLabel.text = ""
         typesLabel.text = ""
@@ -36,20 +38,24 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         typesLabel.text = pokemon.types.joined(separator: ", ")
         
         // 加載縮略圖，這裡可以使用SDWebImage或其他庫
-        // imageView.sd_setImage(with: pokemon.thumbnailURL)
+        if let url = URL(string: pokemon.thumbnailURL) {
+            imageView.kf.setImage(with: url)
+        }
         
         updateFavoriteButton()
     }
     
     private func updateFavoriteButton() {
-        // 檢查是否收藏 (從UserDefaults或CoreData)
-        let isFavorite = false // 根據需要進行修改
-        let buttonTitle = isFavorite ? "Unfavorite" : "Favorite"
-        favoriteButton.setTitle(buttonTitle, for: .normal)
+        let isFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
+        let imageName = isFavorite ? "star.fill" : "star"
+        favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
     
     @IBAction func favoriteBtnTapped(_ sender: UIButton) {
-        guard let pokemon = pokemon else { return }
+        let isFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
+        UserDefaults.standard.set(!isFavorite, forKey: pokemon.favoriteKey)
+        UserDefaults.standard.synchronize()
+        updateFavoriteButton()
         delegate?.didToggleFavorite(for: pokemon)
     }
 }
