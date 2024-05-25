@@ -47,7 +47,7 @@
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
                         <connections>
-                            <action selector="favoriteBtnTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="RsQ-g6-XJj"/>
+                            <action selector="favoriteButtonTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="RsQ-g6-XJj"/>
                         </connections>
                     </button>
                 </subviews>

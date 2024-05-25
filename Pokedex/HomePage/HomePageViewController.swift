@@ -31,6 +31,11 @@ class HomePageViewController: UIViewController {
         viewModel.loadPokemons()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
+    }
+    
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
@@ -96,13 +101,11 @@ extension HomePageViewController: UICollectionViewDataSource {
         switch viewModel.viewMode {
         case .list:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonListCell", for: indexPath) as! PokemonCollectionViewCell
-            cell.delegate = self
-            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl, isFavorite: viewModel.favoritePokemons[pokemon.id] ?? false)
+            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
             return cell
         case .grid:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
-            cell.delegate = self
-            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl, isFavorite: viewModel.favoritePokemons[pokemon.id] ?? false)
+            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
             return cell
         }
     }
@@ -127,16 +130,6 @@ extension HomePageViewController: UICollectionViewDelegate {
 //            viewModel.loadPokemons()
         }
     }
-}
-
-extension HomePageViewController: PokemonCollectionViewCellDelegate {
-    func favoriteBtnTapped(id: Int, isFavorite: Bool) {
-        viewModel.favoritePokemons[id] = isFavorite
-    }
-    
-//    func favoriteBtnTapped(for pokemon: PokemonModel) {
-//        let UserDefaultFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
-//    }
 }
 
 extension HomePageViewController: UICollectionViewDelegateFlowLayout {

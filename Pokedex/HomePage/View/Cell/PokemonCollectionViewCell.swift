@@ -8,10 +8,6 @@
 import UIKit
 import Kingfisher
 
-protocol PokemonCollectionViewCellDelegate: AnyObject {
-    func favoriteBtnTapped(id: Int, isFavorite: Bool)
-}
-
 class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var idLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
@@ -19,8 +15,6 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var favoriteButton: UIButton!
     var id: Int = 0
-    
-    weak var delegate: PokemonCollectionViewCellDelegate?
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -31,7 +25,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         id = 0
     }
     
-    func configure(id: Int, name: String, types: [String], imageUrl: String, isFavorite: Bool = false) {
+    func configure(id: Int, name: String, types: [String], imageUrl: String) {
         self.id = id
         idLabel.text = "#\(id)"
         nameLabel.text = name
@@ -41,20 +35,18 @@ class PokemonCollectionViewCell: UICollectionViewCell {
             imageView.kf.setImage(with: url)
         }
         
-        updateFavoriteButton(isFavorite: isFavorite)
+        updateFavoriteButton()
     }
     
-    private func updateFavoriteButton(isFavorite: Bool = false) {
-        let imageName = isFavorite ? "heart.fill" : "heart"
-        favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
+    private func updateFavoriteButton() {
+        let isFavorite = appManager.favoritePokemons[id] ?? false
+        let image = UIImage(systemName: isFavorite ? "heart.fill" : "heart")
+        favoriteButton.setImage(image, for: .normal)
     }
     
-    @IBAction func favoriteBtnTapped(_ sender: UIButton) {
-        let newFavoriteStatus = !UserDefaults.standard.bool(forKey: favoriteKey+"\(id)")
-        UserDefaults.standard.set(newFavoriteStatus, forKey: favoriteKey+"\(id)")
-        UserDefaults.standard.synchronize()
-        updateFavoriteButton(isFavorite: newFavoriteStatus)
-        delegate?.favoriteBtnTapped(id: id, isFavorite: newFavoriteStatus)
+    @IBAction func favoriteButtonTapped(_ sender: UIButton) {
+        appManager.updateFavouriteStatus(id: id)
+        updateFavoriteButton()
     }
 }
 

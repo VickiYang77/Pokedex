@@ -7,8 +7,6 @@
 
 import Foundation
 
-let favoriteKey = "favoriteStatus"
-
 class HomePageViewModel {
     
     enum ViewMode {
@@ -21,7 +19,6 @@ class HomePageViewModel {
     private var offset = 0
     private let limit = 20
     private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
-    var favoritePokemons: [Int: Bool] = [:]
     var isFilteringFavorites = false
     var viewMode: ViewMode = .list
     
@@ -45,7 +42,7 @@ class HomePageViewModel {
                     self.fetchPokemonDetails(from: entry.url) { pokemon in
                         if let pokemon = pokemon {
                             let isFavorite = UserDefaults.standard.bool(forKey: favoriteKey+"\(pokemon.id)")
-                            self.favoritePokemons[pokemon.id] = isFavorite
+                            appManager.favoritePokemons[pokemon.id] = isFavorite
                             self.pokemons.append(pokemon)
                         }
                         dispatchGroup.leave()
@@ -91,7 +88,7 @@ class HomePageViewModel {
     
     func toggleFavoriteFilter() {
         isFilteringFavorites.toggle()
-        filteredPokemons = pokemons.filter { favoritePokemons[$0.id] == true }
+        filteredPokemons = pokemons.filter { appManager.favoritePokemons[$0.id] == true }
         onDataLoaded?()
     }
     

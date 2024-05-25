@@ -46,7 +46,7 @@
                             <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage"/>
                         </buttonConfiguration>
                         <connections>
-                            <action selector="favoriteBtnTapped:" destination="7T7-75-zWT" eventType="touchUpInside" id="IrI-oz-nKL"/>
+                            <action selector="favoriteButtonTapped:" destination="7T7-75-zWT" eventType="touchUpInside" id="IrI-oz-nKL"/>
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lck-VV-9Sv" userLabel="typesLabel">

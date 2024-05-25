@@ -8,6 +8,7 @@
 import UIKit
 
 class DetailViewController: UIViewController {
+    private var favoriteButton: UIBarButtonItem!
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     private let viewModel: DetailViewModel
@@ -33,7 +34,24 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupUI()
+    }
+    
+    private func setupNavigationBar() {
+        favoriteButton = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(favouriteButtonTapped))
+        navigationItem.rightBarButtonItem = favoriteButton
+        updateFavoriteButton()
+    }
+    
+    private func updateFavoriteButton() {
+        let isFavorite = appManager.favoritePokemons[viewModel.pokemon.id] ?? false
+        favoriteButton.image = UIImage(systemName: isFavorite ? "heart.fill" : "heart")
+    }
+    
+    @objc private func favouriteButtonTapped() {
+        appManager.updateFavouriteStatus(id: viewModel.pokemon.id)
+        updateFavoriteButton()
     }
     
     private func setupUI() {
