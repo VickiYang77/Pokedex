@@ -12,7 +12,6 @@ struct PokemonModel: Decodable {
     let name: String
     let types: [String]
     let thumbnailURL: String
-    let favoriteKey: String
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -44,7 +43,6 @@ struct PokemonModel: Decodable {
         self.name = name
         self.types = types
         self.thumbnailURL = thumbnailURL
-        self.favoriteKey = "favorite_\(id)"
     }
     
     init(from decoder: Decoder) throws {
@@ -59,8 +57,6 @@ struct PokemonModel: Decodable {
         // 解析圖片URL
         let spritesContainer = try container.decode(PokemonSprites.self, forKey: .sprites)
         thumbnailURL = spritesContainer.frontDefault
-        
-        favoriteKey = "favorite_\(id)"
     }
 }
 

@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 protocol PokemonCollectionViewCellDelegate: AnyObject {
-    func didToggleFavorite(for pokemon: PokemonModel)
+    func favoriteBtnTapped(id: Int, isFavorite: Bool)
 }
 
 class PokemonCollectionViewCell: UICollectionViewCell {
@@ -18,45 +18,59 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var typesLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var favoriteButton: UIButton!
+    var id: Int = 0
     
     weak var delegate: PokemonCollectionViewCellDelegate?
-    private var pokemon: PokemonModel!
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        pokemon = PokemonModel()
         idLabel.text = ""
         nameLabel.text = ""
         typesLabel.text = ""
         imageView.image = nil
+        id = 0
     }
     
-    func configure(with pokemon: PokemonModel) {
-        self.pokemon = pokemon
-        idLabel.text = "#\(pokemon.id)"
-        nameLabel.text = pokemon.name
-        typesLabel.text = pokemon.types.joined(separator: ", ")
+    func configure(id: Int, name: String, types: [String], imageUrl: String, isFavorite: Bool = false) {
+        self.id = id
+        idLabel.text = "#\(id)"
+        nameLabel.text = name
+        typesLabel.text = types.joined(separator: ", ")
         
         // 加載縮略圖，這裡可以使用SDWebImage或其他庫
-        if let url = URL(string: pokemon.thumbnailURL) {
+        if let url = URL(string: imageUrl) {
             imageView.kf.setImage(with: url)
         }
         
-        updateFavoriteButton()
+        updateFavoriteButton(isFavorite: isFavorite)
     }
     
-    private func updateFavoriteButton() {
-        let isFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
-        let imageName = isFavorite ? "star.fill" : "star"
+//    func configure(with pokemon: PokemonModel) {
+//        self.pokemon = pokemon
+//        idLabel.text = "#\(pokemon.id)"
+//        nameLabel.text = pokemon.name
+//        typesLabel.text = pokemon.types.joined(separator: ", ")
+//        
+//        // 加載縮略圖，這裡可以使用SDWebImage或其他庫
+//        if let url = URL(string: pokemon.thumbnailURL) {
+//            imageView.kf.setImage(with: url)
+//        }
+//        
+//        updateFavoriteButton()
+//    }
+    
+    private func updateFavoriteButton(isFavorite: Bool = false) {
+//        let isFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
+        let imageName = isFavorite ? "heart.fill" : "heart"
         favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
     
     @IBAction func favoriteBtnTapped(_ sender: UIButton) {
-        let isFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
-        UserDefaults.standard.set(!isFavorite, forKey: pokemon.favoriteKey)
+        let newFavoriteStatus = !UserDefaults.standard.bool(forKey: favoriteKey+"\(id)")
+        UserDefaults.standard.set(newFavoriteStatus, forKey: favoriteKey+"\(id)")
         UserDefaults.standard.synchronize()
-        updateFavoriteButton()
-        delegate?.didToggleFavorite(for: pokemon)
+        updateFavoriteButton(isFavorite: newFavoriteStatus)
+        delegate?.favoriteBtnTapped(id: id, isFavorite: newFavoriteStatus)
     }
 }
 

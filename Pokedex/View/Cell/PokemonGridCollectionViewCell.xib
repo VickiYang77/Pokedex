@@ -42,7 +42,7 @@
                             <constraint firstAttribute="width" secondItem="ZKH-2H-du0" secondAttribute="height" multiplier="1:1" id="meb-jI-1dL"/>
                         </constraints>
                         <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" image="star" catalog="system">
+                        <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system">
                             <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage"/>
                         </buttonConfiguration>
                         <connections>
@@ -83,6 +83,6 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="star" catalog="system" width="128" height="116"/>
+        <image name="heart" catalog="system" width="128" height="107"/>
     </resources>
 </document>
