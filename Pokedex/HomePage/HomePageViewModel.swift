@@ -20,7 +20,7 @@ class HomePageViewModel {
     private var filteredPokemons: [PokemonModel] = []
     private var offset = 0
     private let limit = 20
-    private let baseURL = "https://pokeapi.co/api/v2/pokemon"
+    private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     var favoritePokemons: [Int: Bool] = [:]
     var isFilteringFavorites = false
     var viewMode: ViewMode = .list
@@ -28,7 +28,7 @@ class HomePageViewModel {
     var onDataLoaded: (() -> Void)?
     
     func loadPokemons() {
-        let urlString = "\(baseURL)?limit=\(limit)&offset=\(offset)"
+        let urlString = "\(pokemonListUrl)?limit=\(limit)&offset=\(offset)"
         guard let url = URL(string: urlString) else { return }
         
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
@@ -95,11 +95,11 @@ class HomePageViewModel {
         onDataLoaded?()
     }
     
-    func filteredPokemonsCount() -> Int {
-        return isFilteringFavorites ? filteredPokemons.count : pokemons.count
+    func pokemonList() -> [PokemonModel] {
+        return isFilteringFavorites ? filteredPokemons : pokemons
     }
     
-    func pokemon(at index: Int) -> PokemonModel {
-        return isFilteringFavorites ? filteredPokemons[index] : pokemons[index]
+    func pokemonList(at index: Int) -> PokemonModel {
+        return pokemonList()[index]
     }
 }

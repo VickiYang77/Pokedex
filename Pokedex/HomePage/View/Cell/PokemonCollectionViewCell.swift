@@ -37,7 +37,6 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         nameLabel.text = name
         typesLabel.text = types.joined(separator: ", ")
         
-        // 加載縮略圖，這裡可以使用SDWebImage或其他庫
         if let url = URL(string: imageUrl) {
             imageView.kf.setImage(with: url)
         }
@@ -45,22 +44,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         updateFavoriteButton(isFavorite: isFavorite)
     }
     
-//    func configure(with pokemon: PokemonModel) {
-//        self.pokemon = pokemon
-//        idLabel.text = "#\(pokemon.id)"
-//        nameLabel.text = pokemon.name
-//        typesLabel.text = pokemon.types.joined(separator: ", ")
-//        
-//        // 加載縮略圖，這裡可以使用SDWebImage或其他庫
-//        if let url = URL(string: pokemon.thumbnailURL) {
-//            imageView.kf.setImage(with: url)
-//        }
-//        
-//        updateFavoriteButton()
-//    }
-    
     private func updateFavoriteButton(isFavorite: Bool = false) {
-//        let isFavorite = UserDefaults.standard.bool(forKey: pokemon.favoriteKey)
         let imageName = isFavorite ? "heart.fill" : "heart"
         favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
     }

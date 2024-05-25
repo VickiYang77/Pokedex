@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" userLabel="DetailInfoView" customClass="DetailInfoView" customModule="Pokedex" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="90"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oGt-v1-Gqy">
+                    <rect key="frame" x="10" y="8" width="74" height="74"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="oGt-v1-Gqy" secondAttribute="height" multiplier="1:1" id="mXP-K7-LQP"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNM-oX-Qjf" userLabel="idLabel">
+                    <rect key="frame" x="94" y="8" width="0.0" height="0.0"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UZ0-PS-4oV" userLabel="nameLabel">
+                    <rect key="frame" x="94" y="13" width="0.0" height="0.0"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zyf-eZ-Qzs" userLabel="typeLabel">
+                    <rect key="frame" x="94" y="18" width="0.0" height="0.0"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="oGt-v1-Gqy" secondAttribute="bottom" constant="8" id="G8J-fq-hAg"/>
+                <constraint firstItem="oGt-v1-Gqy" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="10" id="I03-xm-eJj"/>
+                <constraint firstItem="UZ0-PS-4oV" firstAttribute="bottom" secondItem="zyf-eZ-Qzs" secondAttribute="top" constant="-5" id="Zb2-eh-8Eg"/>
+                <constraint firstItem="UZ0-PS-4oV" firstAttribute="leading" secondItem="CNM-oX-Qjf" secondAttribute="leading" id="aLc-An-spU"/>
+                <constraint firstItem="oGt-v1-Gqy" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="eB7-Hn-WdI"/>
+                <constraint firstItem="zyf-eZ-Qzs" firstAttribute="leading" secondItem="CNM-oX-Qjf" secondAttribute="leading" id="geO-WK-CuW"/>
+                <constraint firstItem="UZ0-PS-4oV" firstAttribute="top" secondItem="CNM-oX-Qjf" secondAttribute="bottom" constant="5" id="kkr-l0-BzQ"/>
+                <constraint firstItem="CNM-oX-Qjf" firstAttribute="top" secondItem="oGt-v1-Gqy" secondAttribute="top" id="wUo-jG-ZOR"/>
+                <constraint firstItem="CNM-oX-Qjf" firstAttribute="leading" secondItem="oGt-v1-Gqy" secondAttribute="trailing" constant="10" id="wiI-Sw-tVt"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="idLabel" destination="CNM-oX-Qjf" id="Q0D-yp-t4k"/>
+                <outlet property="imageView" destination="oGt-v1-Gqy" id="K46-Zw-Bog"/>
+                <outlet property="nameLabel" destination="UZ0-PS-4oV" id="Ucl-rp-H0f"/>
+                <outlet property="typesLabel" destination="zyf-eZ-Qzs" id="1gh-j3-PDm"/>
+            </connections>
+            <point key="canvasLocation" x="9.1603053435114496" y="177.46478873239437"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -87,22 +87,22 @@ class HomePageViewController: UIViewController {
 
 extension HomePageViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.filteredPokemonsCount()
+        return viewModel.pokemonList().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let pokemon = viewModel.pokemon(at: indexPath.row)
+        let pokemon = viewModel.pokemonList(at: indexPath.row)
         
         switch viewModel.viewMode {
         case .list:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonListCell", for: indexPath) as! PokemonCollectionViewCell
             cell.delegate = self
-            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.thumbnailURL, isFavorite: viewModel.favoritePokemons[pokemon.id] ?? false)
+            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl, isFavorite: viewModel.favoritePokemons[pokemon.id] ?? false)
             return cell
         case .grid:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
             cell.delegate = self
-            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.thumbnailURL, isFavorite: viewModel.favoritePokemons[pokemon.id] ?? false)
+            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl, isFavorite: viewModel.favoritePokemons[pokemon.id] ?? false)
             return cell
         }
     }
@@ -110,8 +110,10 @@ extension HomePageViewController: UICollectionViewDataSource {
 
 extension HomePageViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let pokemon = viewModel.pokemon(at: indexPath.row)
-        // 跳轉到詳細頁面 (詳細頁面未實作)
+        let pokemon = viewModel.pokemonList(at: indexPath.row)
+        let vm = DetailViewModel(pokemon: pokemon)
+        let detailVC = DetailViewController(viewModel: vm)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

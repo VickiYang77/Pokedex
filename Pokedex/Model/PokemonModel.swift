@@ -11,7 +11,7 @@ struct PokemonModel: Decodable {
     let id: Int
     let name: String
     let types: [String]
-    let thumbnailURL: String
+    let spritesImageUrl: String
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -31,6 +31,24 @@ struct PokemonModel: Decodable {
     
     struct PokemonSprites: Codable {
         let frontDefault: String
+        let other: PokemonSpritesOther
+        
+        enum CodingKeys: String, CodingKey {
+            case frontDefault = "front_default"
+            case other
+        }
+    }
+    
+    struct PokemonSpritesOther: Codable {
+        let officialArtwork: PokemonSpritesOtherOfficialArtwork
+        
+        enum CodingKeys: String, CodingKey {
+            case officialArtwork = "official-artwork"
+        }
+    }
+    
+    struct PokemonSpritesOtherOfficialArtwork: Codable {
+        let frontDefault: String
         
         enum CodingKeys: String, CodingKey {
             case frontDefault = "front_default"
@@ -38,11 +56,11 @@ struct PokemonModel: Decodable {
     }
     
     // 自定義初始化方法
-    init(id: Int = 0, name: String = "", types: [String] = [], thumbnailURL: String = "") {
+    init(id: Int = 0, name: String = "", types: [String] = [], spritesImageUrl: String = "") {
         self.id = id
         self.name = name
         self.types = types
-        self.thumbnailURL = thumbnailURL
+        self.spritesImageUrl = spritesImageUrl
     }
     
     init(from decoder: Decoder) throws {
@@ -50,13 +68,11 @@ struct PokemonModel: Decodable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         
-        // 解析types
         let typesContainer = try container.decode([PokemonTypes].self, forKey: .types)
         types = typesContainer.map { $0.type.name }
         
-        // 解析圖片URL
         let spritesContainer = try container.decode(PokemonSprites.self, forKey: .sprites)
-        thumbnailURL = spritesContainer.frontDefault
+        spritesImageUrl = spritesContainer.other.officialArtwork.frontDefault
     }
 }
 
