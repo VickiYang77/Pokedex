@@ -7,7 +7,12 @@
 
 import UIKit
 
+protocol EvolutionChainViewDelegate: AnyObject {
+    func pokemonButtonTapped(pokemon: PokemonModel)
+}
+
 class EvolutionChainView: UIView {
+    weak var delegate: EvolutionChainViewDelegate?
     private let titleLabel = UILabel()
     private let containerView = UIView()
     private var stackViews: [UIStackView] = []
@@ -49,6 +54,7 @@ class EvolutionChainView: UIView {
         for (index, item) in evolutionChain.enumerated() {
             let itemView = Bundle.main.loadNibNamed("EvolutionItemView", owner: nil, options: nil)?.first as! EvolutionItemView
             itemView.configure(name: item.species.name)
+            itemView.delegate = self
             NSLayoutConstraint.activate([
                 itemView.heightAnchor.constraint(equalToConstant: itemSize),
                 itemView.widthAnchor.constraint(equalToConstant: itemSize)
@@ -120,5 +126,11 @@ class EvolutionChainView: UIView {
                 stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
             }
         }
+    }
+}
+
+extension EvolutionChainView: EvolutionItemViewDelegate {
+    func pokemonButtonTapped(pokemon: PokemonModel) {
+        delegate?.pokemonButtonTapped(pokemon: pokemon)
     }
 }

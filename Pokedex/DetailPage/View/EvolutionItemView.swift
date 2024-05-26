@@ -8,7 +8,15 @@
 import UIKit
 import Kingfisher
 
+protocol EvolutionItemViewDelegate: AnyObject {
+    func pokemonButtonTapped(pokemon: PokemonModel)
+}
+
 class EvolutionItemView: UIView {
+    weak var delegate: EvolutionItemViewDelegate?
+    private var pokemon: PokemonModel?
+    
+    @IBOutlet weak var imageButton: UIButton!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var leftUpLineView: UIView!
@@ -16,14 +24,19 @@ class EvolutionItemView: UIView {
     @IBOutlet weak var leftDownLineView: UIView!
     @IBOutlet weak var rightCenterLineView: UIView!
     
-    func configure(name: String) {
+    override func awakeFromNib() {
+        super.awakeFromNib()
         setLineColor()
+    }
+    
+    func configure(name: String) {
         nameLabel.text = name
         
         let url = apiManager.pokemonDetailUrl + "\(name)"
         
         apiManager.fetchPokemonDetail(from: url) { [weak self] pokemon in
             if let pokemon = pokemon {
+                self?.pokemon = pokemon
                 if let url = URL(string: pokemon.spritesImageUrl) {
                     self?.imageView.kf.setImage(with: url)
                 }
@@ -37,5 +50,10 @@ class EvolutionItemView: UIView {
         leftCenterLineView.backgroundColor = lineColor
         leftDownLineView.backgroundColor = lineColor
         rightCenterLineView.backgroundColor = lineColor
+    }
+    
+    @IBAction func pokemonButtonTapped(_ sender: UIButton) {
+        guard let pokemon = pokemon else { return }
+        delegate?.pokemonButtonTapped(pokemon: pokemon)
     }
 }

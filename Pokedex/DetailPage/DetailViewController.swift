@@ -54,10 +54,12 @@ class DetailViewController: UIViewController {
             return
         }
         evolutionChainView = EvolutionChainView(evolutionChain: evolutionChain)
+        evolutionChainView?.delegate = self
         stackView.addArrangedSubview(evolutionChainView!)
     }
     
     private func setupNavigationBar() {
+        navigationItem.title = viewModel.pokemon.name
         favoriteButton = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(favouriteButtonTapped))
         navigationItem.rightBarButtonItem = favoriteButton
         updateFavoriteButton()
@@ -106,4 +108,12 @@ class DetailViewController: UIViewController {
     }
 }
 
-
+extension DetailViewController: EvolutionChainViewDelegate {
+    func pokemonButtonTapped(pokemon: PokemonModel) {
+        if pokemon.name != viewModel.pokemon.name {
+            let vm = DetailViewModel(pokemon: pokemon)
+            let detailVC = DetailViewController(viewModel: vm)
+            navigationController?.pushViewController(detailVC, animated: true)
+        }
+    }
+}

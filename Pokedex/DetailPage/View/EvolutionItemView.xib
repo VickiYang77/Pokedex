@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,27 +15,48 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBr-wX-DDY">
-                    <rect key="frame" x="15" y="27" width="120" height="126"/>
+                    <rect key="frame" x="10" y="27" width="130" height="126"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8oT-eL-HTl">
-                            <rect key="frame" x="23.666666666666664" y="0.0" width="73" height="73"/>
+                            <rect key="frame" x="28.666666666666657" y="0.0" width="73" height="73"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="8oT-eL-HTl" secondAttribute="height" multiplier="1:1" id="iBP-fo-QiY"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UAa-Zr-zWs" userLabel="nameLabel">
-                            <rect key="frame" x="60" y="83" width="0.0" height="0.0"/>
+                            <rect key="frame" x="65" y="83" width="0.0" height="0.0"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <button opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RaT-s6-5yV">
+                            <rect key="frame" x="28.666666666666657" y="0.0" width="73" height="83"/>
+                            <color key="backgroundColor" systemColor="systemRedColor"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="RaT-s6-5yV" secondAttribute="height" multiplier="1:1" id="mJS-wz-sp8"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain"/>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="mJS-wz-sp8"/>
+                                </mask>
+                            </variation>
+                            <connections>
+                                <action selector="pokemonButtonTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="50u-Nu-8aF"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <constraints>
                         <constraint firstItem="UAa-Zr-zWs" firstAttribute="top" secondItem="8oT-eL-HTl" secondAttribute="bottom" constant="10" id="31o-b5-4w3"/>
                         <constraint firstItem="8oT-eL-HTl" firstAttribute="top" secondItem="kBr-wX-DDY" secondAttribute="top" id="32u-hj-lfo"/>
+                        <constraint firstItem="RaT-s6-5yV" firstAttribute="leading" secondItem="8oT-eL-HTl" secondAttribute="leading" id="c2z-o2-tsy"/>
+                        <constraint firstItem="RaT-s6-5yV" firstAttribute="top" secondItem="8oT-eL-HTl" secondAttribute="top" id="cUk-1L-MqS"/>
                         <constraint firstItem="8oT-eL-HTl" firstAttribute="centerX" secondItem="kBr-wX-DDY" secondAttribute="centerX" id="dP2-JG-Y0w"/>
                         <constraint firstItem="UAa-Zr-zWs" firstAttribute="centerX" secondItem="kBr-wX-DDY" secondAttribute="centerX" id="hnr-rk-3xO"/>
                         <constraint firstItem="8oT-eL-HTl" firstAttribute="bottom" secondItem="kBr-wX-DDY" secondAttribute="centerY" constant="10" id="me7-lq-4Ah"/>
+                        <constraint firstItem="RaT-s6-5yV" firstAttribute="trailing" secondItem="8oT-eL-HTl" secondAttribute="trailing" id="r0H-T7-cln"/>
+                        <constraint firstItem="RaT-s6-5yV" firstAttribute="bottom" secondItem="UAa-Zr-zWs" secondAttribute="bottom" id="vgd-iX-ymb"/>
                     </constraints>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ASO-jv-8xC" userLabel="leftUpLine">
@@ -64,7 +86,7 @@
             <constraints>
                 <constraint firstItem="kBr-wX-DDY" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.7" id="0D8-iy-q16"/>
                 <constraint firstItem="kBr-wX-DDY" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="3GG-JJ-TJ7"/>
-                <constraint firstAttribute="trailing" secondItem="kBr-wX-DDY" secondAttribute="trailing" constant="15" id="5bE-OA-4hq"/>
+                <constraint firstAttribute="trailing" secondItem="kBr-wX-DDY" secondAttribute="trailing" constant="10" id="5bE-OA-4hq"/>
                 <constraint firstItem="XA7-FA-2VK" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="5zv-3W-GAR"/>
                 <constraint firstAttribute="bottom" secondItem="jil-wG-rHX" secondAttribute="bottom" id="9aP-Nq-Dam"/>
                 <constraint firstItem="jil-wG-rHX" firstAttribute="width" secondItem="ASO-jv-8xC" secondAttribute="width" id="DwD-GX-OWx"/>
@@ -74,7 +96,7 @@
                 <constraint firstItem="z0n-eC-rCq" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Tiq-ty-fdH"/>
                 <constraint firstItem="jil-wG-rHX" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Zfl-GO-Zqb"/>
                 <constraint firstItem="z0n-eC-rCq" firstAttribute="height" secondItem="XA7-FA-2VK" secondAttribute="height" id="cqy-Ch-jAZ"/>
-                <constraint firstItem="kBr-wX-DDY" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="f0q-Lc-XxK"/>
+                <constraint firstItem="kBr-wX-DDY" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="10" id="f0q-Lc-XxK"/>
                 <constraint firstItem="kBr-wX-DDY" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="grA-5t-rwc"/>
                 <constraint firstAttribute="top" secondItem="ASO-jv-8xC" secondAttribute="top" id="jbo-Uj-3ik"/>
                 <constraint firstItem="ASO-jv-8xC" firstAttribute="bottom" secondItem="XA7-FA-2VK" secondAttribute="top" id="mTw-Vc-1XO"/>
@@ -84,6 +106,7 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="imageButton" destination="RaT-s6-5yV" id="7Qt-Nl-khW"/>
                 <outlet property="imageView" destination="8oT-eL-HTl" id="DXA-SB-7qc"/>
                 <outlet property="leftCenterLineView" destination="XA7-FA-2VK" id="Vtw-pC-c7B"/>
                 <outlet property="leftDownLineView" destination="jil-wG-rHX" id="AAG-kb-o7O"/>
@@ -94,4 +117,9 @@
             <point key="canvasLocation" x="-19.847328244274809" y="253.52112676056339"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>
