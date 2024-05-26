@@ -17,8 +17,8 @@ class HomePageViewModel {
     var isFilteringFavorites = false
     var viewMode: ViewMode = .list
     var onDataLoaded: (() -> Void)?
-    private(set) var pokemons: [PokemonModel] = []
-    private(set) var filteredPokemons: [PokemonModel] = []
+    private(set) var pokemonslist: [Int] = []
+    private(set) var filteredPokemons: [Int] = []
     private(set) var isLoadingData = false
     private var offset = 0
     private let limit = 20
@@ -45,21 +45,24 @@ class HomePageViewModel {
                 
                 let dispatchGroup = DispatchGroup()
                 
-                for entry in response.results {
-                    dispatchGroup.enter()
-                    apiManager.fetchPokemonDetail(from: entry.url) { pokemon in
-                        if let pokemon = pokemon {
-                            let isFavorite = UserDefaults.standard.bool(forKey: favoriteKey+"\(pokemon.id)")
-                            appManager.favoritePokemons[pokemon.id] = isFavorite
-                            self.pokemons.append(pokemon)
+                for item in response.results {
+                    if let pokemon = appManager.getPokemonWith(name: item.name) {
+                        print("vvv_exist_pokemons:\(pokemon.id)")
+                        self.pokemonslist.append(pokemon.id)
+                    } else {
+                        dispatchGroup.enter()
+                        apiManager.fetchPokemonDetail(from: item.url) { pokemon in
+                            if let pokemon = pokemon {
+                                self.pokemonslist.append(pokemon.id)
+                            }
+                            dispatchGroup.leave()
                         }
-                        dispatchGroup.leave()
                     }
                 }
                 
                 dispatchGroup.notify(queue: .main) {
                     self.offset += self.limit
-                    self.pokemons.sort(by: { $0.id < $1.id })
+                    self.pokemonslist.sort(by: <)
                     self.onDataLoaded?()
                     self.isLoadingData = false
                 }
@@ -74,15 +77,37 @@ class HomePageViewModel {
     
     func toggleFavoriteFilter() {
         isFilteringFavorites.toggle()
-        filteredPokemons = pokemons.filter { appManager.favoritePokemons[$0.id] == true }
+        if isFilteringFavorites {
+            filteredPokemons = appManager.favoritePokemons.map { $0.key }
+            filteredPokemons.sort(by: <)
+        }
         onDataLoaded?()
     }
     
-    func pokemonList() -> [PokemonModel] {
-        return isFilteringFavorites ? filteredPokemons : pokemons
+    func pokemonList() -> [Int] {
+        return isFilteringFavorites ? filteredPokemons : pokemonslist
     }
     
-    func pokemonList(at index: Int) -> PokemonModel {
-        return pokemonList()[index]
+    func pokemonList(at index: Int, completion: @escaping (PokemonModel?) -> Void) {
+        let pokemonIDs = pokemonList()
+        guard index < pokemonIDs.count else {
+            completion(nil)
+            return
+        }
+        
+        let pokemonID = pokemonIDs[index]
+        if let pokemon = appManager.pokemons[pokemonID] {
+            print("vvv_exist_pokemons:\(pokemonID)")
+            completion(pokemon)
+        } else {
+            let url = apiManager.pokemonDetailUrl + "\(pokemonID)"
+            apiManager.fetchPokemonDetail(from: url) { pokemon in
+                if let pokemon = pokemon {
+                    completion(pokemon)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
     }
 }

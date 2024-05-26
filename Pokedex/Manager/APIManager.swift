@@ -25,6 +25,7 @@ class APIManager {
             return
         }
         
+        print("vvv_dataTask_fetchPokemonDetail：\(url)")
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, error == nil else {
                 completion(nil)
@@ -34,6 +35,8 @@ class APIManager {
             do {
                 let decoder = JSONDecoder()
                 let pokemon = try decoder.decode(PokemonModel.self, from: data)
+                appManager.pokemons[pokemon.id] = pokemon
+                appManager.pokemonNameToIDMap[pokemon.name] = pokemon.id
                 completion(pokemon)
             } catch {
                 print("Failed to decode Pokemon details: \(error)")

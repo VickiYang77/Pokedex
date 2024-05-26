@@ -103,7 +103,7 @@ class DetailViewController: UIViewController {
     }
     
     @objc private func favouriteButtonTapped() {
-        appManager.updateFavouriteStatus(id: viewModel.pokemon.id)
+        appManager.toggleFavorite(pokemonID: viewModel.pokemon.id)
         updateFavoriteButton()
     }
     

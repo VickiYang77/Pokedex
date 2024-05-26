@@ -19,7 +19,6 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         layer.cornerRadius = 10
-//        layer.masksToBounds = true
         layer.masksToBounds = false
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.2
@@ -57,7 +56,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     }
     
     @IBAction func favoriteButtonTapped(_ sender: UIButton) {
-        appManager.updateFavouriteStatus(id: id)
+        appManager.toggleFavorite(pokemonID: id)
         updateFavoriteButton()
     }
 }

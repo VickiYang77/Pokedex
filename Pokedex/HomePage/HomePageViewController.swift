@@ -98,27 +98,54 @@ extension HomePageViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let pokemon = viewModel.pokemonList(at: indexPath.row)
+        var cell = PokemonCollectionViewCell()
         
-        switch viewModel.viewMode {
+        switch self.viewModel.viewMode {
         case .list:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonListCell", for: indexPath) as! PokemonCollectionViewCell
-            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
-            return cell
+            cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonListCell", for: indexPath) as! PokemonCollectionViewCell
         case .grid:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
-            cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
-            return cell
+            cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
         }
+        
+        viewModel.pokemonList(at: indexPath.row) { pokemon in
+            guard let pokemon = pokemon else { return }
+            DispatchQueue.main.async {
+                cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
+            }
+        }
+        
+        return cell
     }
+    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        if let pokemon = viewModel.pokemonList(at: indexPath.row) {
+//            switch viewModel.viewMode {
+//            case .list:
+//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonListCell", for: indexPath) as! PokemonCollectionViewCell
+//                cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
+//                return cell
+//            case .grid:
+//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
+//                cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
+//                return cell
+//            }
+//        }
+//        
+//        return UICollectionViewCell()
+//    }
 }
 
 extension HomePageViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let pokemon = viewModel.pokemonList(at: indexPath.row)
-        let vm = DetailViewModel(pokemon: pokemon)
-        let detailVC = DetailViewController(viewModel: vm)
-        navigationController?.pushViewController(detailVC, animated: true)
+        viewModel.pokemonList(at: indexPath.row) { [weak self] pokemon in
+            guard let self = self, let pokemon = pokemon else { return }
+            
+            DispatchQueue.main.async {
+                let vm = DetailViewModel(pokemon: pokemon)
+                let detailVC = DetailViewController(viewModel: vm)
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            }
+        }
     }
     
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -174,7 +201,7 @@ extension HomePageViewController: UICollectionViewDataSourcePrefetching {
         let collectionViewHeight = collectionView.bounds.height
 
         // 檢查最後一個 cell 是否可見
-        print("vvv_isLastCellVisible:\(lastIndexPath), \(lastCellFrame.maxY <= contentOffsetY + collectionViewHeight)")
+//        print("vvv_isLastCellVisible:\(lastIndexPath), \(lastCellFrame.maxY <= contentOffsetY + collectionViewHeight)")
         return lastCellFrame.maxY <= contentOffsetY + collectionViewHeight
     }
 }

@@ -7,26 +7,54 @@
 
 import Foundation
 
-let favoriteKey = "favoriteStatus"
 let appManager = APPManager.shared
 
 class APPManager {
     static let shared = APPManager()
-    private init() {}
     
-    var favoritePokemons: [Int: Bool] = [:]
+    var pokemons: [Int: PokemonModel] = [:]
+    var pokemonNameToIDMap: [String: Int] = [:]     // key: pokemonName, Value: id
+    private(set) var favoritePokemons: [Int: Bool] = [:]
+    private let favoriteIDKey = "favoriteIDs"
     
-    func updateFavouriteStatus(id: Int) {
-        let favoriteIdKey = "\(favoriteKey)\(id)"
-        let newStatus = !UserDefaults.standard.bool(forKey: favoriteIdKey)
-        
-        if newStatus {
-            UserDefaults.standard.set(newStatus, forKey: favoriteIdKey)
-            favoritePokemons[id] = true
-        } else {
-            UserDefaults.standard.removeObject(forKey: favoriteIdKey)
-            favoritePokemons.removeValue(forKey: id)
+    private init() {
+        loadFavoritePokemons()
+    }
+    
+    func getPokemonWith(name: String) -> PokemonModel? {
+        if let id = pokemonNameToIDMap[name] {
+            return pokemons[id]
         }
+        return nil
+    }
+    
+    func toggleFavorite(pokemonID: Int) {
+        if let _ = favoritePokemons[pokemonID] {
+            favoritePokemons.removeValue(forKey: pokemonID)
+        } else {
+            favoritePokemons[pokemonID] = true
+        }
+        updateFavoritePokemons()
+    }
+    
+    private func loadFavoritePokemons() {
+        if let favoriteString = UserDefaults.standard.string(forKey: favoriteIDKey) {
+            print("vvv_First_favoriteString：\(favoriteString)")
+            let favoriteIDs = favoriteString.split(separator: ",").compactMap { Int($0) }
+            for id in favoriteIDs {
+                favoritePokemons[id] = true
+            }
+            
+            print("vvv_First===============================")
+        }
+    }
+    
+    private func updateFavoritePokemons() {
+        print("vvv_favoritePokemons：\(favoritePokemons)")
+        let favoriteIDs = favoritePokemons.map { String($0.key) }
+        let favoriteString = favoriteIDs.joined(separator: ",")
+        print("vvv_favoriteString：\(favoriteString)")
+        UserDefaults.standard.set(favoriteString, forKey: favoriteIDKey)
         UserDefaults.standard.synchronize()
     }
 }
