@@ -37,7 +37,6 @@ class DetailViewController: UIViewController {
         view.layer.shadowOpacity = 0.2
         view.layer.shadowOffset = CGSize(width: 0, height: 2)
         view.layer.shadowRadius = 4
-//        view.heightAnchor.constraint(equalToConstant: 200).isActive = true
         return view
     }()
     
@@ -92,14 +91,29 @@ class DetailViewController: UIViewController {
     
     private func setupNavigationBar() {
         navigationItem.title = viewModel.pokemon.name
-        favoriteButton = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(favouriteButtonTapped))
-        navigationItem.rightBarButtonItem = favoriteButton
+        favoriteButton = createBarButton(with: "heart", action: #selector(favouriteButtonTapped))
+        let homeButton = createBarButton(with: "house", action: #selector(homeButtonTapped))
+        navigationItem.rightBarButtonItems = [favoriteButton, homeButton]
         updateFavoriteButton()
+    }
+    
+    private func createBarButton(with systemName: String, action: Selector) -> UIBarButtonItem {
+        let btn = UIButton(type: .system)
+        btn.setImage(UIImage(systemName: systemName), for: .normal)
+        btn.addTarget(self, action: action, for: .touchUpInside)
+        btn.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        return UIBarButtonItem(customView: btn)
     }
     
     private func updateFavoriteButton() {
         let isFavorite = appManager.favoritePokemons[viewModel.pokemon.id] ?? false
-        favoriteButton.image = UIImage(systemName: isFavorite ? "heart.fill" : "heart")
+        if let button = favoriteButton.customView as? UIButton {
+            button.setImage(UIImage(systemName: isFavorite ? "heart.fill" : "heart"), for: .normal)
+        }
+    }
+    
+    @objc private func homeButtonTapped() {
+        navigationController?.popToRootViewController(animated: true)
     }
     
     @objc private func favouriteButtonTapped() {

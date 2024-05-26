@@ -85,7 +85,6 @@ class HomePageViewController: UIViewController {
     
     @objc private func showFavorite() {
         viewModel.toggleFavoriteFilter()
-        
         if let button = favoriteFilterButton.customView as? UIButton {
             button.setImage(UIImage(systemName: viewModel.isFilteringFavorites ? "heart.fill" : "heart"), for: .normal)
         }
@@ -116,23 +115,6 @@ extension HomePageViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if let pokemon = viewModel.pokemonList(at: indexPath.row) {
-//            switch viewModel.viewMode {
-//            case .list:
-//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonListCell", for: indexPath) as! PokemonCollectionViewCell
-//                cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
-//                return cell
-//            case .grid:
-//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
-//                cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
-//                return cell
-//            }
-//        }
-//        
-//        return UICollectionViewCell()
-//    }
 }
 
 extension HomePageViewController: UICollectionViewDelegate {
@@ -148,14 +130,19 @@ extension HomePageViewController: UICollectionViewDelegate {
         }
     }
     
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let offsetY = scrollView.contentOffset.y
-//        let contentHeight = scrollView.contentSize.height
-//        let height = scrollView.frame.size.height
-//        
-//        if offsetY > contentHeight - height {
-//        }
-//    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        print("aaa_offsetY:\(offsetY)")
+        if offsetY > contentHeight - height {
+            print("aaa_======================")
+            print("aaa_offsetY:\(offsetY)")
+            print("aaa_contentHeight:\(contentHeight)")
+            print("aaa_height:\(height)")
+        }
+    }
 }
 
 extension HomePageViewController: UICollectionViewDelegateFlowLayout {
