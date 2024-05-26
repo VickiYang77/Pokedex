@@ -7,30 +7,37 @@
 
 class DetailViewModel {
     var pokemon: PokemonModel
+    var species: PokemonSpeciesModel?
     var evolutionChain: EvolutionChainModel?
 
     init(pokemon: PokemonModel) {
         self.pokemon = pokemon
     }
     
-    func fetchEvolutionChain(completion: @escaping (Error?) -> Void) {
+    func fetchPokemonSpecies(completion: @escaping (Result<PokemonSpeciesModel, Error>) -> Void) {
         apiManager.fetchPokemonSpecies(url: pokemon.speciesUrl) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let species):
-                apiManager.fetchEvolutionChain(url: species.evolutionChain.url) { result in
-                    switch result {
-                    case .success(let evolutionChain):
-                        self.evolutionChain = evolutionChain
-                        completion(nil)
-                    case .failure(let error):
-                        completion(error)
-                    }
-                }
-                
+                self.species = species
+                completion(.success(species))
             case .failure(let error):
-                completion(error)
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchEvolutionChain(url: String, completion: @escaping (Result<EvolutionChainModel, Error>) -> Void) {
+        apiManager.fetchEvolutionChain(url: url) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let evolutionChain):
+                self.evolutionChain = evolutionChain
+                completion(.success(evolutionChain))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }

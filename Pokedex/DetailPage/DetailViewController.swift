@@ -15,17 +15,30 @@ class DetailViewController: UIViewController {
     private var evolutionChainView: EvolutionChainView?
     
     private lazy var infoView: DetailInfoView = {
-        let infoView = Bundle.main.loadNibNamed("DetailInfoView", owner: nil, options: nil)?.first as! DetailInfoView
-        infoView.backgroundColor = .white
-        infoView.layer.cornerRadius = 10
-        infoView.layer.masksToBounds = false
-        infoView.layer.shadowColor = UIColor.black.cgColor
-        infoView.layer.shadowOpacity = 0.2
-        infoView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        infoView.layer.shadowRadius = 4
-        infoView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        infoView.configure(id: self.viewModel.pokemon.id, name: self.viewModel.pokemon.name, types: self.viewModel.pokemon.types, imageUrl: self.viewModel.pokemon.spritesImageUrl)
-        return infoView
+        let view = Bundle.main.loadNibNamed("DetailInfoView", owner: nil, options: nil)?.first as! DetailInfoView
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = false
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowRadius = 4
+        view.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        view.configure(id: self.viewModel.pokemon.id, name: self.viewModel.pokemon.name, types: self.viewModel.pokemon.types, imageUrl: self.viewModel.pokemon.spritesImageUrl)
+        return view
+    }()
+    
+    private lazy var descView: DescriptionView = {
+        let view = Bundle.main.loadNibNamed("DescriptionView", owner: nil, options: nil)?.first as! DescriptionView
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = false
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowRadius = 4
+//        view.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        return view
     }()
     
     init(viewModel: DetailViewModel) {
@@ -41,10 +54,29 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupUI()
-        viewModel.fetchEvolutionChain { [weak self] _ in
+        
+        viewModel.fetchPokemonSpecies { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.createEvolutionChainView()
+                switch result {
+                case .success(let species):
+                    let flavorText = species.flavorTextEntries.first?.flavorText.replacingOccurrences(of: "\n", with: " ")
+                    self.descView.descLabel.text = flavorText
+                    
+                    self.viewModel.fetchEvolutionChain(url: species.evolutionChain.url) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success:
+                                self.createEvolutionChainView()
+                            case .failure(let error):
+                                print("Failed to fetch evolution chain: \(error)")
+                            }
+                        }
+                    }
+                    
+                case .failure(let error):
+                    print("Failed to fetch species: \(error)")
+                }
             }
         }
     }
@@ -105,6 +137,7 @@ class DetailViewController: UIViewController {
         ])
         
         stackView.addArrangedSubview(infoView)
+        stackView.addArrangedSubview(descView)
     }
 }
 
