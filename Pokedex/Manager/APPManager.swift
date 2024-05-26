@@ -1,5 +1,5 @@
 //
-//  appManager.swift
+//  APPManager.swift
 //  Pokedex
 //
 //  Created by Vicki Yang   on 2024/5/25.
@@ -39,21 +39,16 @@ class APPManager {
     
     private func loadFavoritePokemons() {
         if let favoriteString = UserDefaults.standard.string(forKey: favoriteIDKey) {
-            print("vvv_First_favoriteString：\(favoriteString)")
             let favoriteIDs = favoriteString.split(separator: ",").compactMap { Int($0) }
             for id in favoriteIDs {
                 favoritePokemons[id] = true
             }
-            
-            print("vvv_First===============================")
         }
     }
     
     private func updateFavoritePokemons() {
-        print("vvv_favoritePokemons：\(favoritePokemons)")
         let favoriteIDs = favoritePokemons.map { String($0.key) }
         let favoriteString = favoriteIDs.joined(separator: ",")
-        print("vvv_favoriteString：\(favoriteString)")
         UserDefaults.standard.set(favoriteString, forKey: favoriteIDKey)
         UserDefaults.standard.synchronize()
     }

@@ -15,7 +15,7 @@ class DetailInfoView: UIView {
     @IBOutlet weak var typesLabel: UILabel!
     
     func configure(id: Int, name: String, types: [String], imageUrl: String) {
-        idLabel.text = "#\(id)"
+        idLabel.text = String(format: "#%04d", id)
         nameLabel.text = name
         typesLabel.text = types.joined(separator: ", ")
         

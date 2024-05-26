@@ -11,6 +11,7 @@ enum APIError: Error {
     case invalidURL
     case noData
 }
+
 let apiManager = APIManager.shared
 
 class APIManager {
@@ -18,85 +19,70 @@ class APIManager {
     private init() {}
     
     let pokemonDetailUrl = "https://pokeapi.co/api/v2/pokemon/"
-    
-    func fetchPokemonDetail(from url: String, completion: @escaping (PokemonModel?) -> Void) {
+    let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
+
+    private func fetchData<T: Decodable>(from url: String, completion: @escaping (Result<T, Error>) -> Void) {
         guard let url = URL(string: url) else {
-            completion(nil)
+            completion(.failure(APIError.invalidURL))
             return
         }
         
-        print("vvv_dataTask_fetchPokemonDetail：\(url)")
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(nil)
+        print("vvv_fetchData：\(url)")
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
                 return
             }
             
+            guard let data = data else {
+                completion(.failure(APIError.noData))
+                return
+            }
+
             do {
                 let decoder = JSONDecoder()
-                let pokemon = try decoder.decode(PokemonModel.self, from: data)
+                let decodedData = try decoder.decode(T.self, from: data)
+                completion(.success(decodedData))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func fetchPokemonList(limit: Int, offset: Int, completion: @escaping (Result<PokemonResponse, Error>) -> Void) {
+        let urlString = "\(pokemonListUrl)?limit=\(limit)&offset=\(offset)"
+        fetchData(from: urlString, completion: completion)
+    }
+    
+    func fetchPokemonDetail(for id: Int, completion: @escaping (PokemonModel?) -> Void) {
+        let urlString = pokemonDetailUrl + "\(id)"
+        fetchPokemonDetail(from: urlString, completion: completion)
+    }
+
+    func fetchPokemonDetail(for name: String, completion: @escaping (PokemonModel?) -> Void) {
+        let urlString = pokemonDetailUrl + name
+        fetchPokemonDetail(from: urlString, completion: completion)
+    }
+
+    func fetchPokemonDetail(from url: String, completion: @escaping (PokemonModel?) -> Void) {
+        fetchData(from: url) { (result: Result<PokemonModel, Error>) in
+            switch result {
+            case .success(let pokemon):
                 appManager.pokemons[pokemon.id] = pokemon
                 appManager.pokemonNameToIDMap[pokemon.name] = pokemon.id
                 completion(pokemon)
-            } catch {
-                print("Failed to decode Pokemon details: \(error)")
+            case .failure(let error):
+                print("Failed to fetch Pokemon detail: \(error)")
                 completion(nil)
             }
         }
-        task.resume()
     }
     
     func fetchPokemonSpecies(url: String, completion: @escaping (Result<PokemonSpeciesModel, Error>) -> Void) {
-        guard let url = URL(string: url) else {
-            completion(.failure(APIError.invalidURL))
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(APIError.noData))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                let species = try decoder.decode(PokemonSpeciesModel.self, from: data)
-                completion(.success(species))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        fetchData(from: url, completion: completion)
     }
-    
+
     func fetchEvolutionChain(url: String, completion: @escaping (Result<EvolutionChainModel, Error>) -> Void) {
-        guard let url = URL(string: url) else {
-            completion(.failure(APIError.invalidURL))
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(APIError.noData))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                let evolutionChain = try decoder.decode(EvolutionChainModel.self, from: data)
-                completion(.success(evolutionChain))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        fetchData(from: url, completion: completion)
     }
 }

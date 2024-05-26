@@ -33,6 +33,7 @@ class HomePageViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.reloadFilteredPokemons()
         collectionView.reloadData()
     }
     
@@ -129,20 +130,6 @@ extension HomePageViewController: UICollectionViewDelegate {
             }
         }
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        let height = scrollView.frame.size.height
-        
-        print("aaa_offsetY:\(offsetY)")
-        if offsetY > contentHeight - height {
-            print("aaa_======================")
-            print("aaa_offsetY:\(offsetY)")
-            print("aaa_contentHeight:\(contentHeight)")
-            print("aaa_height:\(height)")
-        }
-    }
 }
 
 extension HomePageViewController: UICollectionViewDelegateFlowLayout {
@@ -160,36 +147,21 @@ extension HomePageViewController: UICollectionViewDelegateFlowLayout {
 extension HomePageViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         guard !viewModel.isLoadingData else { return }
-        
-        if !viewModel.isFilteringFavorites && isLastCellVisible() {
+
+        if !viewModel.isFilteringFavorites && isNearListEnd(for: indexPaths) {
             viewModel.loadPokemons()
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-    }
-    
-    private func isLastCellVisible() -> Bool {
+    private func isNearListEnd(for indexPaths: [IndexPath]) -> Bool {
         guard let collectionView = collectionView else { return false }
 
-        // 取得最後一個 section 的索引
         let lastSectionIndex = collectionView.numberOfSections - 1
         guard lastSectionIndex >= 0 else { return false }
 
-        // 取得最後一個 section 中倒數第二個 cell 的 indexPath
-        let lastItemIndex = collectionView.numberOfItems(inSection: lastSectionIndex) - 1
-        let lastIndexPath = IndexPath(item: lastItemIndex, section: lastSectionIndex)
+        let lastCellIndex = collectionView.numberOfItems(inSection: lastSectionIndex) - 1
+        let lastCellIndexPath = IndexPath(item: lastCellIndex, section: lastSectionIndex)
 
-        // 取得最後一個 cell 的 frame
-        guard let lastCellFrame = collectionView.layoutAttributesForItem(at: lastIndexPath)?.frame else { return false }
-
-        // 取得 collectionView 的 contentOffset 和 bounds
-        let contentOffsetY = collectionView.contentOffset.y
-        let collectionViewHeight = collectionView.bounds.height
-
-        // 檢查最後一個 cell 是否可見
-//        print("vvv_isLastCellVisible:\(lastIndexPath), \(lastCellFrame.maxY <= contentOffsetY + collectionViewHeight)")
-        return lastCellFrame.maxY <= contentOffsetY + collectionViewHeight
+        return indexPaths.contains(lastCellIndexPath)
     }
 }
-

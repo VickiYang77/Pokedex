@@ -33,14 +33,12 @@ class EvolutionItemView: UIView {
         nameLabel.text = name
         
         if let pokemon = appManager.getPokemonWith(name: name) {
-            print("vvv_exist_pokemons:\(pokemon.id)")
             self.pokemon = pokemon
             if let url = URL(string: pokemon.spritesImageUrl) {
                 self.imageView.kf.setImage(with: url)
             }
         } else {
-            let url = apiManager.pokemonDetailUrl + "\(name)"
-            apiManager.fetchPokemonDetail(from: url) { [weak self] pokemon in
+            apiManager.fetchPokemonDetail(for: name) { [weak self] pokemon in
                 if let pokemon = pokemon {
                     self?.pokemon = pokemon
                     if let url = URL(string: pokemon.spritesImageUrl) {

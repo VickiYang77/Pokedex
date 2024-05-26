@@ -14,7 +14,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var typesLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var favoriteButton: UIButton!
-    var id: Int = 0
+    private var id: Int = 0
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -38,7 +38,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     
     func configure(id: Int, name: String, types: [String], imageUrl: String) {
         self.id = id
-        idLabel.text = "#\(id)"
+        idLabel.text = String(format: "#%04d", id)
         nameLabel.text = name
         typesLabel.text = types.joined(separator: ", ")
         

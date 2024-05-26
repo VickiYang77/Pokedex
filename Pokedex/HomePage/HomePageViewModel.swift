@@ -22,65 +22,62 @@ class HomePageViewModel {
     private(set) var isLoadingData = false
     private var offset = 0
     private let limit = 20
-    private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     
     func loadPokemons() {
         guard !isLoadingData else { return }
         
         isLoadingData = true
-        
-        let urlString = "\(pokemonListUrl)?limit=\(limit)&offset=\(offset)"
-        guard let url = URL(string: urlString) else { return }
-        
-        print("vvv_dataTask：\(urlString)")
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self, let data = data, error == nil else {
-                self?.isLoadingData = false
-                return
-            }
+        apiManager.fetchPokemonList(limit: limit, offset: offset) { [weak self] result in
+            guard let self = self else { return }
             
-            do {
-                let decoder = JSONDecoder()
-                let response = try decoder.decode(PokemonResponse.self, from: data)
-                
-                let dispatchGroup = DispatchGroup()
-                
-                for item in response.results {
-                    if let pokemon = appManager.getPokemonWith(name: item.name) {
-                        print("vvv_exist_pokemons:\(pokemon.id)")
-                        self.pokemonslist.append(pokemon.id)
-                    } else {
-                        dispatchGroup.enter()
-                        apiManager.fetchPokemonDetail(from: item.url) { pokemon in
-                            if let pokemon = pokemon {
-                                self.pokemonslist.append(pokemon.id)
-                            }
-                            dispatchGroup.leave()
-                        }
-                    }
-                }
-                
-                dispatchGroup.notify(queue: .main) {
-                    self.offset += self.limit
-                    self.pokemonslist.sort(by: <)
-                    self.onDataLoaded?()
-                    self.isLoadingData = false
-                }
-                
-            } catch {
-                print("Failed to decode JSON: \(error)")
+            defer {
                 self.isLoadingData = false
             }
+            
+            switch result {
+            case .success(let response):
+                self.handlePokemonDetail(response)
+            case .failure(let error):
+                print("Failed to load Pokemons: \(error)")
+            }
         }
-        task.resume()
     }
     
-    func toggleFavoriteFilter() {
-        isFilteringFavorites.toggle()
+    private func handlePokemonDetail(_ response: PokemonResponse) {
+        let dispatchGroup = DispatchGroup()
+        
+        for item in response.results {
+            if let pokemon = appManager.getPokemonWith(name: item.name) {
+                self.pokemonslist.append(pokemon.id)
+            } else {
+                dispatchGroup.enter()
+                apiManager.fetchPokemonDetail(from: item.url) { [weak self] pokemon in
+                    if let pokemon = pokemon {
+                        self?.pokemonslist.append(pokemon.id)
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.offset += self.limit
+            self.pokemonslist.sort(by: <)
+            self.onDataLoaded?()
+        }
+    }
+    
+    func reloadFilteredPokemons() {
         if isFilteringFavorites {
             filteredPokemons = appManager.favoritePokemons.map { $0.key }
             filteredPokemons.sort(by: <)
         }
+    }
+    
+    func toggleFavoriteFilter() {
+        isFilteringFavorites.toggle()
+        reloadFilteredPokemons()
         onDataLoaded?()
     }
     
@@ -97,11 +94,9 @@ class HomePageViewModel {
         
         let pokemonID = pokemonIDs[index]
         if let pokemon = appManager.pokemons[pokemonID] {
-            print("vvv_exist_pokemons:\(pokemonID)")
             completion(pokemon)
         } else {
-            let url = apiManager.pokemonDetailUrl + "\(pokemonID)"
-            apiManager.fetchPokemonDetail(from: url) { pokemon in
+            apiManager.fetchPokemonDetail(for: pokemonID) { pokemon in
                 if let pokemon = pokemon {
                     completion(pokemon)
                 } else {
