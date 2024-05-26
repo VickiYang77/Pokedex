@@ -39,8 +39,10 @@ class HomePageViewController: UIViewController {
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.prefetchDataSource = self
         
         let listNib = UINib(nibName: "PokemonListCollectionViewCell", bundle: nil)
         collectionView.register(listNib, forCellWithReuseIdentifier: "PokemonListCell")
@@ -61,7 +63,7 @@ class HomePageViewController: UIViewController {
         let btn = UIButton(type: .system)
         btn.setImage(UIImage(systemName: systemName), for: .normal)
         btn.addTarget(self, action: action, for: .touchUpInside)
-        btn.frame = CGRect(x: 0, y: 0, width: 30, height: 30) // 固定大小
+        btn.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
         return UIBarButtonItem(customView: btn)
     }
     
@@ -119,17 +121,14 @@ extension HomePageViewController: UICollectionViewDelegate {
         navigationController?.pushViewController(detailVC, animated: true)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        let height = scrollView.frame.size.height
-        
-        if offsetY > contentHeight - height {
-            // 自動加載更多Pokemon數據
-//            print("vvv_offset:\(viewModel.offset)")
-//            viewModel.loadPokemons()
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let offsetY = scrollView.contentOffset.y
+//        let contentHeight = scrollView.contentSize.height
+//        let height = scrollView.frame.size.height
+//        
+//        if offsetY > contentHeight - height {
+//        }
+//    }
 }
 
 extension HomePageViewController: UICollectionViewDelegateFlowLayout {
@@ -139,14 +138,44 @@ extension HomePageViewController: UICollectionViewDelegateFlowLayout {
         case .list:
             return CGSize(width: width - 20, height: 100)
         case .grid:
-            return CGSize(width: width / 2 - 10, height: width / 2)
+            return CGSize(width: width / 3 - 7, height: width / 2.5)
         }
     }
 }
 
+extension HomePageViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        guard !viewModel.isLoadingData else { return }
+        
+        if !viewModel.isFilteringFavorites && isLastCellVisible() {
+            viewModel.loadPokemons()
+        }
+    }
 
-extension UIViewController {
-    open override func awakeFromNib() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+    }
+    
+    private func isLastCellVisible() -> Bool {
+        guard let collectionView = collectionView else { return false }
+
+        // 取得最後一個 section 的索引
+        let lastSectionIndex = collectionView.numberOfSections - 1
+        guard lastSectionIndex >= 0 else { return false }
+
+        // 取得最後一個 section 中倒數第二個 cell 的 indexPath
+        let lastItemIndex = collectionView.numberOfItems(inSection: lastSectionIndex) - 1
+        let lastIndexPath = IndexPath(item: lastItemIndex, section: lastSectionIndex)
+
+        // 取得最後一個 cell 的 frame
+        guard let lastCellFrame = collectionView.layoutAttributesForItem(at: lastIndexPath)?.frame else { return false }
+
+        // 取得 collectionView 的 contentOffset 和 bounds
+        let contentOffsetY = collectionView.contentOffset.y
+        let collectionViewHeight = collectionView.bounds.height
+
+        // 檢查最後一個 cell 是否可見
+        print("vvv_isLastCellVisible:\(lastIndexPath), \(lastCellFrame.maxY <= contentOffsetY + collectionViewHeight)")
+        return lastCellFrame.maxY <= contentOffsetY + collectionViewHeight
     }
 }
+

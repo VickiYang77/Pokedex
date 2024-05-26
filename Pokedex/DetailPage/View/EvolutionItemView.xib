@@ -4,7 +4,6 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -31,7 +30,7 @@
                         </label>
                         <button opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RaT-s6-5yV">
                             <rect key="frame" x="28.666666666666657" y="0.0" width="73" height="83"/>
-                            <color key="backgroundColor" systemColor="systemRedColor"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="RaT-s6-5yV" secondAttribute="height" multiplier="1:1" id="mJS-wz-sp8"/>
                             </constraints>
@@ -117,9 +116,4 @@
             <point key="canvasLocation" x="-19.847328244274809" y="253.52112676056339"/>
         </view>
     </objects>
-    <resources>
-        <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-    </resources>
 </document>

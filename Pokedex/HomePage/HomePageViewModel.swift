@@ -14,22 +14,30 @@ class HomePageViewModel {
         case grid
     }
     
-    private(set) var pokemons: [PokemonModel] = []
-    private var filteredPokemons: [PokemonModel] = []
-    private var offset = 130
-    private let limit = 20
-    private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     var isFilteringFavorites = false
     var viewMode: ViewMode = .list
-    
     var onDataLoaded: (() -> Void)?
+    private(set) var pokemons: [PokemonModel] = []
+    private(set) var filteredPokemons: [PokemonModel] = []
+    private(set) var isLoadingData = false
+    private var offset = 0
+    private let limit = 20
+    private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     
     func loadPokemons() {
+        guard !isLoadingData else { return }
+        
+        isLoadingData = true
+        
         let urlString = "\(pokemonListUrl)?limit=\(limit)&offset=\(offset)"
         guard let url = URL(string: urlString) else { return }
         
+        print("vvv_dataTask：\(urlString)")
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self, let data = data, error == nil else { return }
+            guard let self = self, let data = data, error == nil else {
+                self?.isLoadingData = false
+                return
+            }
             
             do {
                 let decoder = JSONDecoder()
@@ -53,10 +61,12 @@ class HomePageViewModel {
                     self.offset += self.limit
                     self.pokemons.sort(by: { $0.id < $1.id })
                     self.onDataLoaded?()
+                    self.isLoadingData = false
                 }
                 
             } catch {
                 print("Failed to decode JSON: \(error)")
+                self.isLoadingData = false
             }
         }
         task.resume()
