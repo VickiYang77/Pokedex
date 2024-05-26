@@ -12,12 +12,17 @@ class DetailViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     private let viewModel: DetailViewModel
+    private var evolutionChainView: EvolutionChainView?
     
     private lazy var infoView: DetailInfoView = {
         let infoView = Bundle.main.loadNibNamed("DetailInfoView", owner: nil, options: nil)?.first as! DetailInfoView
-        infoView.backgroundColor = .lightGray
+        infoView.backgroundColor = .white
         infoView.layer.cornerRadius = 10
-        infoView.layer.masksToBounds = true
+        infoView.layer.masksToBounds = false
+        infoView.layer.shadowColor = UIColor.black.cgColor
+        infoView.layer.shadowOpacity = 0.2
+        infoView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        infoView.layer.shadowRadius = 4
         infoView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         infoView.configure(id: self.viewModel.pokemon.id, name: self.viewModel.pokemon.name, types: self.viewModel.pokemon.types, imageUrl: self.viewModel.pokemon.spritesImageUrl)
         return infoView
@@ -36,6 +41,20 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupUI()
+        viewModel.fetchEvolutionChain { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.createEvolutionChainView()
+            }
+        }
+    }
+    
+    private func createEvolutionChainView() {
+        guard let evolutionChain = viewModel.evolutionChain else {
+            return
+        }
+        evolutionChainView = EvolutionChainView(evolutionChain: evolutionChain)
+        stackView.addArrangedSubview(evolutionChainView!)
     }
     
     private func setupNavigationBar() {
@@ -55,7 +74,7 @@ class DetailViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         
         // setup ScrollView
         scrollView.showsHorizontalScrollIndicator = false
@@ -68,8 +87,7 @@ class DetailViewController: UIViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        // setup StackView  
-        stackView.backgroundColor = .yellow
+        // setup StackView
         stackView.axis = .vertical
         stackView.spacing = 10
         stackView.layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
@@ -85,11 +103,6 @@ class DetailViewController: UIViewController {
         ])
         
         stackView.addArrangedSubview(infoView)
-        
-        let secondSubview = UIView()
-        secondSubview.backgroundColor = .cyan
-        secondSubview.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        stackView.addArrangedSubview(secondSubview)
     }
 }
 

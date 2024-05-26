@@ -5,31 +5,42 @@
 //  Created by Vicki Yang   on 2024/5/23.
 //
 
-import Foundation
-
 struct PokemonModel: Decodable {
     let id: Int
     let name: String
     let types: [String]
+    let speciesUrl: String
     let spritesImageUrl: String
     
     enum CodingKeys: String, CodingKey {
         case id
         case name
         case types
+        case species
         case sprites
     }
     
-    struct PokemonTypes: Codable {
+    // MARK: - Type
+    struct PokemonTypes: Decodable {
         let slot: Int
         let type: PokemonType
     }
     
-    struct PokemonType: Codable {
+    struct PokemonType: Decodable {
         let name: String
     }
     
-    struct PokemonSprites: Codable {
+    // MARK: - Species
+    struct PokemonSpecies: Decodable {
+        let url: String
+        
+        enum CodingKeys: String, CodingKey {
+            case url
+        }
+    }
+    
+    // MARK: - Sprites
+    struct PokemonSprites: Decodable {
         let frontDefault: String
         let other: PokemonSpritesOther
         
@@ -39,7 +50,7 @@ struct PokemonModel: Decodable {
         }
     }
     
-    struct PokemonSpritesOther: Codable {
+    struct PokemonSpritesOther: Decodable {
         let officialArtwork: PokemonSpritesOtherOfficialArtwork
         
         enum CodingKeys: String, CodingKey {
@@ -47,7 +58,7 @@ struct PokemonModel: Decodable {
         }
     }
     
-    struct PokemonSpritesOtherOfficialArtwork: Codable {
+    struct PokemonSpritesOtherOfficialArtwork: Decodable {
         let frontDefault: String
         
         enum CodingKeys: String, CodingKey {
@@ -55,11 +66,12 @@ struct PokemonModel: Decodable {
         }
     }
     
-    // 自定義初始化方法
-    init(id: Int = 0, name: String = "", types: [String] = [], spritesImageUrl: String = "") {
+    // MARK: - init
+    init(id: Int = 0, name: String = "", types: [String] = [], speciesUrl: String = "", spritesImageUrl: String = "") {
         self.id = id
         self.name = name
         self.types = types
+        self.speciesUrl = speciesUrl
         self.spritesImageUrl = spritesImageUrl
     }
     
@@ -71,20 +83,10 @@ struct PokemonModel: Decodable {
         let typesContainer = try container.decode([PokemonTypes].self, forKey: .types)
         types = typesContainer.map { $0.type.name }
         
+        let speciesContainer = try container.decode(PokemonSpecies.self, forKey: .species)
+        speciesUrl = speciesContainer.url
+        
         let spritesContainer = try container.decode(PokemonSprites.self, forKey: .sprites)
         spritesImageUrl = spritesContainer.other.officialArtwork.frontDefault
     }
 }
-
-struct PokemonResponse: Decodable {
-    let count: Int
-    let next: String?
-    let previous: String?
-    let results: [PokemonEntry]
-    
-    struct PokemonEntry: Codable {
-        let name: String
-        let url: String
-    }
-}
-

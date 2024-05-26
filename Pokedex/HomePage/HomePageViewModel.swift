@@ -16,7 +16,7 @@ class HomePageViewModel {
     
     private(set) var pokemons: [PokemonModel] = []
     private var filteredPokemons: [PokemonModel] = []
-    private var offset = 0
+    private var offset = 130
     private let limit = 20
     private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     var isFilteringFavorites = false
@@ -39,7 +39,7 @@ class HomePageViewModel {
                 
                 for entry in response.results {
                     dispatchGroup.enter()
-                    self.fetchPokemonDetails(from: entry.url) { pokemon in
+                    apiManager.fetchPokemonDetail(from: entry.url) { pokemon in
                         if let pokemon = pokemon {
                             let isFavorite = UserDefaults.standard.bool(forKey: favoriteKey+"\(pokemon.id)")
                             appManager.favoritePokemons[pokemon.id] = isFavorite
@@ -57,30 +57,6 @@ class HomePageViewModel {
                 
             } catch {
                 print("Failed to decode JSON: \(error)")
-            }
-        }
-        task.resume()
-    }
-    
-    private func fetchPokemonDetails(from url: String, completion: @escaping (PokemonModel?) -> Void) {
-        guard let url = URL(string: url) else {
-            completion(nil)
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(nil)
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                let pokemon = try decoder.decode(PokemonModel.self, from: data)
-                completion(pokemon)
-            } catch {
-                print("Failed to decode Pokemon details: \(error)")
-                completion(nil)
             }
         }
         task.resume()

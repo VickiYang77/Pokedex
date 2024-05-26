@@ -1,5 +1,5 @@
 //
-//  AppManager.swift
+//  appManager.swift
 //  Pokedex
 //
 //  Created by Vicki Yang   on 2024/5/25.
@@ -8,10 +8,10 @@
 import Foundation
 
 let favoriteKey = "favoriteStatus"
-let appManager = AppManager.shared
+let appManager = APPManager.shared
 
-class AppManager {
-    static let shared = AppManager()
+class APPManager {
+    static let shared = APPManager()
     private init() {}
     
     var favoritePokemons: [Int: Bool] = [:]
