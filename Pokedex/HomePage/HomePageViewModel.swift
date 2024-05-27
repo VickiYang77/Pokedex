@@ -17,6 +17,7 @@ class HomePageViewModel {
     var isFilteringFavorites = false
     var viewMode: ViewMode = .list
     var onDataLoaded: (() -> Void)?
+    var updateDataStatus: ((String) -> Void)?
     private(set) var pokemonslist: [Int] = []
     private(set) var filteredPokemons: [Int] = []
     private(set) var isLoadingData = false
@@ -36,6 +37,7 @@ class HomePageViewModel {
             case .success(let response):
                 self.handlePokemonDetail(response)
             case .failure(let error):
+                self.updateDataStatus?("No Pokémon Found")
                 print("Failed to load Pokemons: \(error)")
             }
         }
@@ -63,13 +65,18 @@ class HomePageViewModel {
             self.offset += self.limit
             self.pokemonslist.sort(by: <)
             self.onDataLoaded?()
+            self.updateDataStatus?("")
         }
     }
     
     func reloadFilteredPokemons() {
         if isFilteringFavorites {
-            filteredPokemons = appManager.favoritePokemons.map { $0.key }
-            filteredPokemons.sort(by: <)
+            if pokemonslist.count != 0 {
+                filteredPokemons = appManager.favoritePokemons.map { $0.key }
+                filteredPokemons.sort(by: <)
+            } else {
+                filteredPokemons = []
+            }
         }
     }
     

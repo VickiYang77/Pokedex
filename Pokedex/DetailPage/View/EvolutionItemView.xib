@@ -16,7 +16,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBr-wX-DDY">
                     <rect key="frame" x="10" y="27" width="130" height="126"/>
                     <subviews>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8oT-eL-HTl">
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Pokeball" translatesAutoresizingMaskIntoConstraints="NO" id="8oT-eL-HTl">
                             <rect key="frame" x="28.666666666666657" y="0.0" width="73" height="73"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="8oT-eL-HTl" secondAttribute="height" multiplier="1:1" id="iBP-fo-QiY"/>
@@ -116,4 +116,7 @@
             <point key="canvasLocation" x="-19.847328244274809" y="253.52112676056339"/>
         </view>
     </objects>
+    <resources>
+        <image name="Pokeball" width="372" height="373"/>
+    </resources>
 </document>

@@ -16,7 +16,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="297" height="66"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="781-G4-ShA">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Pokeball" translatesAutoresizingMaskIntoConstraints="NO" id="781-G4-ShA">
                         <rect key="frame" x="8" y="5" width="56" height="56"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="781-G4-ShA" secondAttribute="height" multiplier="1:1" id="KfI-aE-9VF"/>
@@ -76,6 +76,7 @@
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="Pokeball" width="372" height="373"/>
         <image name="heart" catalog="system" width="128" height="107"/>
     </resources>
 </document>

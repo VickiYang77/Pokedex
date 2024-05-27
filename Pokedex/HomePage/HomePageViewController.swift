@@ -8,8 +8,9 @@
 import UIKit
 
 class HomePageViewController: UIViewController {
-    private var collectionView: UICollectionView!
     private let viewModel: HomePageViewModel
+    private let dataStatusLabel = UILabel()
+    private var collectionView: UICollectionView!
     private var modeButton: UIBarButtonItem!
     private var favoriteFilterButton: UIBarButtonItem!
     
@@ -29,12 +30,26 @@ class HomePageViewController: UIViewController {
         setupNavigationBar()
         setupViewModel()
         viewModel.loadPokemons()
+        showDataStatusView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadFilteredPokemons()
         collectionView.reloadData()
+    }
+    
+    func showDataStatusView() {
+        dataStatusLabel.text = "Loading Pokémon Data"
+        dataStatusLabel.textAlignment = .center
+        dataStatusLabel.textColor = .gray
+        dataStatusLabel.font = .systemFont(ofSize: 20)
+        view.addSubview(dataStatusLabel)
+        dataStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            dataStatusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dataStatusLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     private func setupCollectionView() {
@@ -76,8 +91,19 @@ class HomePageViewController: UIViewController {
     }
     
     private func setupViewModel() {
+        viewModel.updateDataStatus = { [weak self] text in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.dataStatusLabel.isHidden = !self.viewModel.pokemonList().isEmpty
+                self.dataStatusLabel.text = text
+            }
+        }
+        
         viewModel.onDataLoaded = { [weak self] in
-            self?.collectionView.reloadData()
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         }
     }
     

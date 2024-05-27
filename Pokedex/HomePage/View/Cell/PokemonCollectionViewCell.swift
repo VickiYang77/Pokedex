@@ -31,7 +31,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         idLabel.text = ""
         nameLabel.text = ""
         typesLabel.text = ""
-        imageView.image = nil
+        imageView.image = UIImage(named: "Pokeball")
         pokemonID = 0
     }
     
