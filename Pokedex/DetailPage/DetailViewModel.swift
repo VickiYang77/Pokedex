@@ -9,6 +9,7 @@ class DetailViewModel {
     var pokemon: PokemonModel
     var species: PokemonSpeciesModel?
     var evolutionChain: EvolutionChainModel?
+    var descriptionText: String = ""
 
     init(pokemon: PokemonModel) {
         self.pokemon = pokemon
@@ -21,6 +22,7 @@ class DetailViewModel {
             switch result {
             case .success(let species):
                 self.species = species
+                self.descriptionText = self.getDescriptionText(for: species)
                 completion(.success(species))
             case .failure(let error):
                 completion(.failure(error))
@@ -40,5 +42,16 @@ class DetailViewModel {
                 completion(.failure(error))
             }
         }
+    }
+    
+    private func getDescriptionText(for species: PokemonSpeciesModel) -> String {
+        let preferredLanguage = "en"
+        let selectedVersion = "red"
+        
+        if let entry = species.flavorTextEntries.first(where: { $0.language.name == preferredLanguage && $0.version.name == selectedVersion }) {
+            return entry.flavorText.replacingOccurrences(of: "\n", with: " ")
+        }
+        
+        return species.flavorTextEntries.first?.flavorText.replacingOccurrences(of: "\n", with: " ") ?? ""
     }
 }

@@ -18,36 +18,8 @@ class APIManager {
     static let shared = APIManager()
     private init() {}
     
-    let pokemonDetailUrl = "https://pokeapi.co/api/v2/pokemon/"
-    let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
-
-    private func fetchData<T: Decodable>(from url: String, completion: @escaping (Result<T, Error>) -> Void) {
-        guard let url = URL(string: url) else {
-            completion(.failure(APIError.invalidURL))
-            return
-        }
-        
-        print("vvv_fetchData：\(url)")
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(APIError.noData))
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                let decodedData = try decoder.decode(T.self, from: data)
-                completion(.success(decodedData))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
-    }
+    private let pokemonDetailUrl = "https://pokeapi.co/api/v2/pokemon/"
+    private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     
     func fetchPokemonList(limit: Int, offset: Int, completion: @escaping (Result<PokemonResponse, Error>) -> Void) {
         let urlString = "\(pokemonListUrl)?limit=\(limit)&offset=\(offset)"
@@ -84,5 +56,33 @@ class APIManager {
 
     func fetchEvolutionChain(url: String, completion: @escaping (Result<EvolutionChainModel, Error>) -> Void) {
         fetchData(from: url, completion: completion)
+    }
+    
+    private func fetchData<T: Decodable>(from url: String, completion: @escaping (Result<T, Error>) -> Void) {
+        guard let url = URL(string: url) else {
+            completion(.failure(APIError.invalidURL))
+            return
+        }
+        
+        print("vvv_fetchData：\(url)")
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(APIError.noData))
+                return
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                let decodedData = try decoder.decode(T.self, from: data)
+                completion(.success(decodedData))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
     }
 }

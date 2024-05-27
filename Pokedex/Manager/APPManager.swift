@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIKit
+import Kingfisher
 
 let appManager = APPManager.shared
 
@@ -35,6 +37,11 @@ class APPManager {
             favoritePokemons[pokemonID] = true
         }
         updateFavoritePokemons()
+    }
+    
+    func setPokemonImage(for imageView: UIImageView, with url: URL?) {
+        let placeholderImage = UIImage(named: "Pokeball")
+        imageView.kf.setImage(with: url, placeholder: placeholderImage)
     }
     
     private func loadFavoritePokemons() {

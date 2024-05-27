@@ -30,9 +30,7 @@ class HomePageViewModel {
         apiManager.fetchPokemonList(limit: limit, offset: offset) { [weak self] result in
             guard let self = self else { return }
             
-            defer {
-                self.isLoadingData = false
-            }
+            self.isLoadingData = false
             
             switch result {
             case .success(let response):

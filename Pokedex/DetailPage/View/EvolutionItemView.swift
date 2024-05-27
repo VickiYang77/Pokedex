@@ -6,10 +6,9 @@
 //
 
 import UIKit
-import Kingfisher
 
 protocol EvolutionItemViewDelegate: AnyObject {
-    func pokemonButtonTapped(pokemon: PokemonModel)
+    func gotoDetailPageWith(pokemon: PokemonModel)
 }
 
 class EvolutionItemView: UIView {
@@ -35,14 +34,16 @@ class EvolutionItemView: UIView {
         if let pokemon = appManager.getPokemonWith(name: name) {
             self.pokemon = pokemon
             if let url = URL(string: pokemon.spritesImageUrl) {
-                self.imageView.kf.setImage(with: url)
+                appManager.setPokemonImage(for: imageView, with: url)
             }
         } else {
             apiManager.fetchPokemonDetail(for: name) { [weak self] pokemon in
                 if let pokemon = pokemon {
                     self?.pokemon = pokemon
                     if let url = URL(string: pokemon.spritesImageUrl) {
-                        self?.imageView.kf.setImage(with: url)
+                        if let imageView = self?.imageView {
+                            appManager.setPokemonImage(for: imageView, with: url)
+                        }
                     }
                 }
             }
@@ -57,8 +58,8 @@ class EvolutionItemView: UIView {
         rightCenterLineView.backgroundColor = lineColor
     }
     
-    @IBAction func pokemonButtonTapped(_ sender: UIButton) {
+    @IBAction func evolutionChainPokemonTapped(_ sender: UIButton) {
         guard let pokemon = pokemon else { return }
-        delegate?.pokemonButtonTapped(pokemon: pokemon)
+        delegate?.gotoDetailPageWith(pokemon: pokemon)
     }
 }

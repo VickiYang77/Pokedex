@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Kingfisher
 
 class DetailInfoView: UIView {
     @IBOutlet weak var imageView: UIImageView!
@@ -20,7 +19,7 @@ class DetailInfoView: UIView {
         typesLabel.text = types.joined(separator: ", ")
         
         if let url = URL(string: imageUrl) {
-            imageView.kf.setImage(with: url)
+            appManager.setPokemonImage(for: imageView, with: url)
         }
     }
 }

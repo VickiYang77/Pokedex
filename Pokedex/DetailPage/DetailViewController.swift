@@ -56,11 +56,11 @@ class DetailViewController: UIViewController {
         
         viewModel.fetchPokemonSpecies { [weak self] result in
             guard let self = self else { return }
+            
             DispatchQueue.main.async {
                 switch result {
                 case .success(let species):
-                    let flavorText = species.flavorTextEntries.first?.flavorText.replacingOccurrences(of: "\n", with: " ")
-                    self.descView.descLabel.text = flavorText
+                    self.descView.configure(description: self.viewModel.descriptionText)
                     
                     self.viewModel.fetchEvolutionChain(url: species.evolutionChain.url) { result in
                         DispatchQueue.main.async {
@@ -80,15 +80,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    private func createEvolutionChainView() {
-        guard let evolutionChain = viewModel.evolutionChain else {
-            return
-        }
-        evolutionChainView = EvolutionChainView(evolutionChain: evolutionChain)
-        evolutionChainView?.delegate = self
-        stackView.addArrangedSubview(evolutionChainView!)
-    }
-    
     private func setupNavigationBar() {
         navigationItem.title = viewModel.pokemon.name
         favoriteButton = createBarButton(with: "heart", action: #selector(favouriteButtonTapped))
@@ -103,22 +94,6 @@ class DetailViewController: UIViewController {
         btn.addTarget(self, action: action, for: .touchUpInside)
         btn.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
         return UIBarButtonItem(customView: btn)
-    }
-    
-    private func updateFavoriteButton() {
-        let isFavorite = appManager.favoritePokemons[viewModel.pokemon.id] ?? false
-        if let button = favoriteButton.customView as? UIButton {
-            button.setImage(UIImage(systemName: isFavorite ? "heart.fill" : "heart"), for: .normal)
-        }
-    }
-    
-    @objc private func homeButtonTapped() {
-        navigationController?.popToRootViewController(animated: true)
-    }
-    
-    @objc private func favouriteButtonTapped() {
-        appManager.toggleFavorite(pokemonID: viewModel.pokemon.id)
-        updateFavoriteButton()
     }
     
     private func setupUI() {
@@ -153,10 +128,35 @@ class DetailViewController: UIViewController {
         stackView.addArrangedSubview(infoView)
         stackView.addArrangedSubview(descView)
     }
+    
+    private func createEvolutionChainView() {
+        guard let evolutionChain = viewModel.evolutionChain else {
+            return
+        }
+        evolutionChainView = EvolutionChainView(evolutionChain: evolutionChain)
+        evolutionChainView?.delegate = self
+        stackView.addArrangedSubview(evolutionChainView!)
+    }
+    
+    @objc private func homeButtonTapped() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    @objc private func favouriteButtonTapped() {
+        appManager.toggleFavorite(pokemonID: viewModel.pokemon.id)
+        updateFavoriteButton()
+    }
+    
+    private func updateFavoriteButton() {
+        let isFavorite = appManager.favoritePokemons[viewModel.pokemon.id] ?? false
+        if let button = favoriteButton.customView as? UIButton {
+            button.setImage(UIImage(systemName: isFavorite ? "heart.fill" : "heart"), for: .normal)
+        }
+    }
 }
 
 extension DetailViewController: EvolutionChainViewDelegate {
-    func pokemonButtonTapped(pokemon: PokemonModel) {
+    func gotoDetailPageWith(pokemon: PokemonModel) {
         if pokemon.name != viewModel.pokemon.name {
             let vm = DetailViewModel(pokemon: pokemon)
             let detailVC = DetailViewController(viewModel: vm)

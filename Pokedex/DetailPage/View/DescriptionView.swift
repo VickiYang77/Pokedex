@@ -9,4 +9,8 @@ import UIKit
 
 class DescriptionView: UIView {
     @IBOutlet weak var descLabel: UILabel!
+    
+    func configure(description: String) {
+        descLabel.text = description
+    }
 }

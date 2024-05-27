@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Kingfisher
 
 class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var idLabel: UILabel!
@@ -14,7 +13,7 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var typesLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var favoriteButton: UIButton!
-    private var id: Int = 0
+    private var pokemonID: Int = 0
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -33,30 +32,30 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         nameLabel.text = ""
         typesLabel.text = ""
         imageView.image = nil
-        id = 0
+        pokemonID = 0
     }
     
     func configure(id: Int, name: String, types: [String], imageUrl: String) {
-        self.id = id
+        pokemonID = id
         idLabel.text = String(format: "#%04d", id)
         nameLabel.text = name
         typesLabel.text = types.joined(separator: ", ")
         
         if let url = URL(string: imageUrl) {
-            imageView.kf.setImage(with: url)
+            appManager.setPokemonImage(for: imageView, with: url)
         }
         
         updateFavoriteButton()
     }
     
     private func updateFavoriteButton() {
-        let isFavorite = appManager.favoritePokemons[id] ?? false
+        let isFavorite = appManager.favoritePokemons[pokemonID] ?? false
         let image = UIImage(systemName: isFavorite ? "heart.fill" : "heart")
         favoriteButton.setImage(image, for: .normal)
     }
     
     @IBAction func favoriteButtonTapped(_ sender: UIButton) {
-        appManager.toggleFavorite(pokemonID: id)
+        appManager.toggleFavorite(pokemonID: pokemonID)
         updateFavoriteButton()
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol EvolutionChainViewDelegate: AnyObject {
-    func pokemonButtonTapped(pokemon: PokemonModel)
+    func gotoDetailPageWith(pokemon: PokemonModel)
 }
 
 class EvolutionChainView: UIView {
@@ -130,7 +130,7 @@ class EvolutionChainView: UIView {
 }
 
 extension EvolutionChainView: EvolutionItemViewDelegate {
-    func pokemonButtonTapped(pokemon: PokemonModel) {
-        delegate?.pokemonButtonTapped(pokemon: pokemon)
+    func gotoDetailPageWith(pokemon: PokemonModel) {
+        delegate?.gotoDetailPageWith(pokemon: pokemon)
     }
 }
