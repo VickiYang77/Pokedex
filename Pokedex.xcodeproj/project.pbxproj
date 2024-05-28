@@ -19,6 +19,7 @@
 		C7675E522C024BA100CD9758 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7675E512C024BA100CD9758 /* APIManager.swift */; };
 		C7675E552C0357DC00CD9758 /* DescriptionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7675E542C0357DC00CD9758 /* DescriptionView.xib */; };
 		C7675E572C0357E500CD9758 /* DescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7675E562C0357E500CD9758 /* DescriptionView.swift */; };
+		C7675E592C05FBE300CD9758 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7675E582C05FBE200CD9758 /* UIViewController+Extension.swift */; };
 		C7807B722C02173A00DE2FEF /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7807B712C02173A00DE2FEF /* DetailViewController.swift */; };
 		C7807B762C021C3B00DE2FEF /* DetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7807B752C021C3B00DE2FEF /* DetailInfoView.xib */; };
 		C7807B782C021E4100DE2FEF /* DetailInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7807B772C021E4100DE2FEF /* DetailInfoView.swift */; };
@@ -51,6 +52,7 @@
 		C7675E512C024BA100CD9758 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		C7675E542C0357DC00CD9758 /* DescriptionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DescriptionView.xib; sourceTree = "<group>"; };
 		C7675E562C0357E500CD9758 /* DescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionView.swift; sourceTree = "<group>"; };
+		C7675E582C05FBE200CD9758 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		C7807B712C02173A00DE2FEF /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		C7807B752C021C3B00DE2FEF /* DetailInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailInfoView.xib; sourceTree = "<group>"; };
 		C7807B772C021E4100DE2FEF /* DetailInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailInfoView.swift; sourceTree = "<group>"; };
@@ -110,6 +112,14 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
+		C7675E5A2C05FE1000CD9758 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				C7675E582C05FBE200CD9758 /* UIViewController+Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		C7807B732C021BA400DE2FEF /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,6 +169,7 @@
 				C78807392BFDC8F600B028FD /* DetailPage */,
 				C73BED572BFF7F50000CFA4E /* Model */,
 				C7675E532C024BA600CD9758 /* Manager */,
+				C7675E5A2C05FE1000CD9758 /* Extension */,
 				C78807212BFDC26E00B028FD /* AppDelegate.swift */,
 				C78807232BFDC26E00B028FD /* SceneDelegate.swift */,
 				C78807252BFDC26E00B028FD /* ViewController.swift */,
@@ -335,6 +346,7 @@
 				C73BED562BFE5C32000CFA4E /* PokemonCollectionViewCell.swift in Sources */,
 				C76041C52C023FC5007E18B8 /* PokemonResponse.swift in Sources */,
 				C7807B7A2C02223E00DE2FEF /* DetailViewModel.swift in Sources */,
+				C7675E592C05FBE300CD9758 /* UIViewController+Extension.swift in Sources */,
 				C78807222BFDC26E00B028FD /* AppDelegate.swift in Sources */,
 				C76041C12C023D1A007E18B8 /* EvolutionItemView.swift in Sources */,
 				C73BED592BFF7F5D000CFA4E /* PokemonModel.swift in Sources */,

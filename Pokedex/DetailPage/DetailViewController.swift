@@ -156,11 +156,19 @@ class DetailViewController: UIViewController {
 }
 
 extension DetailViewController: EvolutionChainViewDelegate {
-    func gotoDetailPageWith(pokemon: PokemonModel) {
-        if pokemon.name != viewModel.pokemon.name {
-            let vm = DetailViewModel(pokemon: pokemon)
-            let detailVC = DetailViewController(viewModel: vm)
-            navigationController?.pushViewController(detailVC, animated: true)
+    func gotoDetailPageWith(pokemon: PokemonModel?) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            guard let pokemon = pokemon else {
+                self.showAlertForNoData()
+                return
+            }
+            
+            if pokemon.name != self.viewModel.pokemon.name {
+                let vm = DetailViewModel(pokemon: pokemon)
+                let detailVC = DetailViewController(viewModel: vm)
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            }
         }
     }
 }

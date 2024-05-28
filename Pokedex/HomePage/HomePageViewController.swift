@@ -164,9 +164,13 @@ extension HomePageViewController: UICollectionViewDelegate {
 //        guard cell.isEnabled else { return }
         
         viewModel.getDisplayedPokemon(at: indexPath.row) { [weak self] pokemon in
-            guard let self = self, let pokemon = pokemon else { return }
-            
+            guard let self = self else { return }
             DispatchQueue.main.async {
+                guard let pokemon = pokemon else {
+                    self.showAlertForNoData()
+                    return
+                }
+            
                 let vm = DetailViewModel(pokemon: pokemon)
                 let detailVC = DetailViewController(viewModel: vm)
                 self.navigationController?.pushViewController(detailVC, animated: true)

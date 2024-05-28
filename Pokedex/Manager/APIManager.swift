@@ -10,6 +10,7 @@ import Foundation
 enum APIError: Error {
     case invalidURL
     case noData
+    case timeout
 }
 
 let apiManager = APIManager.shared
@@ -42,6 +43,7 @@ class APIManager {
             case .success(let pokemon):
                 appManager.pokemons[pokemon.id] = pokemon
                 appManager.pokemonNameToIDMap[pokemon.name] = pokemon.id
+                appManager.pokemonIDToNameMap[pokemon.id] = pokemon.name
                 completion(pokemon)
             case .failure(let error):
                 print("Failed to fetch Pokemon detail: \(error)")
@@ -58,16 +60,29 @@ class APIManager {
         fetchData(from: url, completion: completion)
     }
     
-    private func fetchData<T: Decodable>(from url: String, completion: @escaping (Result<T, Error>) -> Void) {
-        guard let url = URL(string: url) else {
+    private func fetchData<T: Decodable>(from urlString: String, retryCount: Int = 3, retryDelay: TimeInterval = 2, completion: @escaping (Result<T, Error>) -> Void) {
+        guard let url = URL(string: urlString) else {
             completion(.failure(APIError.invalidURL))
             return
         }
         
-        print("vvv_fetchData：\(url)")
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 3
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
             if let error = error {
-                completion(.failure(error))
+                if (error as NSError).code == NSURLErrorTimedOut {
+                    if retryCount > 0 {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + retryDelay) {
+                            self.fetchData(from: urlString, retryCount: retryCount - 1, retryDelay: retryDelay, completion: completion)
+                        }
+                    } else {
+                        completion(.failure(APIError.timeout))
+                    }
+                } else {
+                    completion(.failure(error))
+                }
                 return
             }
             
@@ -77,12 +92,13 @@ class APIManager {
             }
 
             do {
-                let decoder = JSONDecoder()
-                let decodedData = try decoder.decode(T.self, from: data)
+                let decodedData = try JSONDecoder().decode(T.self, from: data)
                 completion(.success(decodedData))
             } catch {
                 completion(.failure(error))
             }
-        }.resume()
+        }
+        
+        task.resume()
     }
 }
