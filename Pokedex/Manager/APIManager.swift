@@ -22,7 +22,7 @@ class APIManager {
     private let pokemonDetailUrl = "https://pokeapi.co/api/v2/pokemon/"
     private let pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
     
-    func fetchPokemonList(limit: Int, offset: Int, completion: @escaping (Result<PokemonResponse, Error>) -> Void) {
+    func fetchPokemonList(limit: Int, offset: Int, completion: @escaping (Result<PokemonListModel, Error>) -> Void) {
         let urlString = "\(pokemonListUrl)?limit=\(limit)&offset=\(offset)"
         fetchData(from: urlString, completion: completion)
     }
@@ -67,7 +67,7 @@ class APIManager {
         }
         
         var request = URLRequest(url: url)
-        request.timeoutInterval = 3
+        request.timeoutInterval = 5
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else { return }
             

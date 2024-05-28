@@ -1,17 +1,17 @@
 //
-//  PokemonResponse.swift
+//  PokemonListModel.swift
 //  Pokedex
 //
 //  Created by Vicki Yang   on 2024/5/25.
 //
 
-struct PokemonResponse: Decodable {
+struct PokemonListModel: Decodable {
     let count: Int
     let next: String?
     let previous: String?
-    let results: [PokemonEntry]
+    let results: [PokemonListResult]
     
-    struct PokemonEntry: Decodable {
+    struct PokemonListResult: Decodable {
         let name: String
         let url: String
     }

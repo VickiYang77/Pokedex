@@ -43,7 +43,7 @@ class HomePageViewModel {
         }
     }
     
-    private func handlePokemonDetail(_ response: PokemonResponse) {
+    private func handlePokemonDetail(_ response: PokemonListModel) {
         var newFetchedPokemonIDs: [Int] = []
         
         for item in response.results {
