@@ -18,7 +18,7 @@ class HomePageViewModel {
     var viewMode: ViewMode = .list
     var onDataLoaded: (() -> Void)?
     var updateDataStatus: ((String) -> Void)?
-    private(set) var pokemonslist: [Int] = []
+    private(set) var fetchedPokemonIDs: [Int] = []
     private(set) var filteredPokemons: [Int] = []
     private(set) var isLoadingData = false
     private var offset = 0
@@ -44,34 +44,34 @@ class HomePageViewModel {
     }
     
     private func handlePokemonDetail(_ response: PokemonResponse) {
-        let dispatchGroup = DispatchGroup()
+        var newFetchedPokemonIDs: [Int] = []
         
         for item in response.results {
-            if let pokemon = appManager.getPokemonWith(name: item.name) {
-                self.pokemonslist.append(pokemon.id)
-            } else {
-                dispatchGroup.enter()
-                apiManager.fetchPokemonDetail(from: item.url) { [weak self] pokemon in
-                    if let pokemon = pokemon {
-                        self?.pokemonslist.append(pokemon.id)
-                    }
-                    dispatchGroup.leave()
-                }
+            if let id = extractPokemonID(from: item.url) {
+                appManager.pokemonIDToNameMap[id] = item.name
+                appManager.pokemonNameToIDMap[item.name] = id
+                newFetchedPokemonIDs.append(id)
             }
         }
         
-        dispatchGroup.notify(queue: .main) { [weak self] in
-            guard let self = self else { return }
-            self.offset += self.limit
-            self.pokemonslist.sort(by: <)
-            self.onDataLoaded?()
-            self.updateDataStatus?("")
+        self.offset += self.limit
+        newFetchedPokemonIDs.sort(by: <)
+        self.fetchedPokemonIDs.append(contentsOf: newFetchedPokemonIDs)
+        self.onDataLoaded?()
+        self.updateDataStatus?("")
+    }
+    
+    private func extractPokemonID(from urlString: String) -> Int? {
+        guard let url = URL(string: urlString) else {
+            return nil
         }
+        let pathComponents = url.pathComponents
+        return pathComponents.last.flatMap { Int($0) }
     }
     
     func reloadFilteredPokemons() {
         if isFilteringFavorites {
-            if pokemonslist.count != 0 {
+            if fetchedPokemonIDs.count != 0 {
                 filteredPokemons = appManager.favoritePokemons.map { $0.key }
                 filteredPokemons.sort(by: <)
             } else {
@@ -86,28 +86,20 @@ class HomePageViewModel {
         onDataLoaded?()
     }
     
-    func pokemonList() -> [Int] {
-        return isFilteringFavorites ? filteredPokemons : pokemonslist
+    func displayedPokemonIDs() -> [Int] {
+        return isFilteringFavorites ? filteredPokemons : fetchedPokemonIDs
     }
     
-    func pokemonList(at index: Int, completion: @escaping (PokemonModel?) -> Void) {
-        let pokemonIDs = pokemonList()
+    func getDisplayedPokemon(at index: Int, completion: @escaping (PokemonModel?) -> Void) {
+        let pokemonIDs = displayedPokemonIDs()
         guard index < pokemonIDs.count else {
             completion(nil)
             return
         }
         
         let pokemonID = pokemonIDs[index]
-        if let pokemon = appManager.pokemons[pokemonID] {
+        appManager.getPokemonDetailWith(for: pokemonID) { pokemon in
             completion(pokemon)
-        } else {
-            apiManager.fetchPokemonDetail(for: pokemonID) { pokemon in
-                if let pokemon = pokemon {
-                    completion(pokemon)
-                } else {
-                    completion(nil)
-                }
-            }
         }
     }
 }

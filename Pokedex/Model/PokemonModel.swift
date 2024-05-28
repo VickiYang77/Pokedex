@@ -41,11 +41,11 @@ struct PokemonModel: Decodable {
     
     // MARK: - Sprites
     struct PokemonSprites: Decodable {
-        let frontDefault: String
+//        let frontDefault: String?
         let other: PokemonSpritesOther
         
         enum CodingKeys: String, CodingKey {
-            case frontDefault = "front_default"
+//            case frontDefault = "front_default"
             case other
         }
     }
@@ -59,7 +59,7 @@ struct PokemonModel: Decodable {
     }
     
     struct PokemonSpritesOtherOfficialArtwork: Decodable {
-        let frontDefault: String
+        let frontDefault: String?
         
         enum CodingKeys: String, CodingKey {
             case frontDefault = "front_default"
@@ -87,6 +87,6 @@ struct PokemonModel: Decodable {
         speciesUrl = speciesContainer.url
         
         let spritesContainer = try container.decode(PokemonSprites.self, forKey: .sprites)
-        spritesImageUrl = spritesContainer.other.officialArtwork.frontDefault
+        spritesImageUrl = spritesContainer.other.officialArtwork.frontDefault ?? ""
     }
 }

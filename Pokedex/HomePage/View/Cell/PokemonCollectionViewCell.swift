@@ -15,6 +15,12 @@ class PokemonCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var favoriteButton: UIButton!
     private var pokemonID: Int = 0
     
+    var isEnabled: Bool = false {
+        didSet {
+            backgroundColor = isEnabled ? .white : #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         layer.cornerRadius = 10
@@ -32,10 +38,11 @@ class PokemonCollectionViewCell: UICollectionViewCell {
         nameLabel.text = ""
         typesLabel.text = ""
         imageView.image = UIImage(named: "Pokeball")
+        isEnabled = false
         pokemonID = 0
     }
     
-    func configure(id: Int, name: String, types: [String], imageUrl: String) {
+    func configure(id: Int, name: String = "", types: [String] = [], imageUrl: String = "") {
         pokemonID = id
         idLabel.text = String(format: "#%04d", id)
         nameLabel.text = name

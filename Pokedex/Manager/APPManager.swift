@@ -13,9 +13,9 @@ let appManager = APPManager.shared
 
 class APPManager {
     static let shared = APPManager()
-    
     var pokemons: [Int: PokemonModel] = [:]
-    var pokemonNameToIDMap: [String: Int] = [:]     // key: pokemonName, Value: id
+    var pokemonIDToNameMap: [Int: String] = [:]
+    var pokemonNameToIDMap: [String: Int] = [:]
     private(set) var favoritePokemons: [Int: Bool] = [:]
     private let favoriteIDKey = "favoriteIDs"
     
@@ -23,11 +23,24 @@ class APPManager {
         loadFavoritePokemons()
     }
     
-    func getPokemonWith(name: String) -> PokemonModel? {
+    func getPokemonDetailWith(for name: String, completion: @escaping (PokemonModel?) -> Void) {
         if let id = pokemonNameToIDMap[name] {
-            return pokemons[id]
+            getPokemonDetailWith(for: id, completion: completion)
+        } else {
+            apiManager.fetchPokemonDetail(for: name) { pokemon in
+                completion(pokemon)
+            }
         }
-        return nil
+    }
+    
+    func getPokemonDetailWith(for id: Int, completion: @escaping (PokemonModel?) -> Void) {
+        if let pokemon = pokemons[id] {
+            completion(pokemon)
+        } else {
+            apiManager.fetchPokemonDetail(for: id) { pokemon in
+                completion(pokemon)
+            }
+        }
     }
     
     func toggleFavorite(pokemonID: Int) {
@@ -37,11 +50,6 @@ class APPManager {
             favoritePokemons[pokemonID] = true
         }
         updateFavoritePokemons()
-    }
-    
-    func setPokemonImage(for imageView: UIImageView, with url: URL?) {
-        let placeholderImage = UIImage(named: "Pokeball")
-        imageView.kf.setImage(with: url, placeholder: placeholderImage)
     }
     
     private func loadFavoritePokemons() {
@@ -60,4 +68,13 @@ class APPManager {
         UserDefaults.standard.synchronize()
     }
 }
+
+extension APPManager {
+    func setPokemonImage(for imageView: UIImageView?, with url: URL) {
+        guard let imageView = imageView else { return }
+        let placeholderImage = UIImage(named: "Pokeball")
+        imageView.kf.setImage(with: url, placeholder: placeholderImage)
+    }
+}
+
 

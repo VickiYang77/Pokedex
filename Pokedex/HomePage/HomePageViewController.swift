@@ -28,9 +28,10 @@ class HomePageViewController: UIViewController {
         
         setupCollectionView()
         setupNavigationBar()
+        showDataStatusView()
+        
         setupViewModel()
         viewModel.loadPokemons()
-        showDataStatusView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,7 +95,7 @@ class HomePageViewController: UIViewController {
         viewModel.updateDataStatus = { [weak self] text in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.dataStatusLabel.isHidden = !self.viewModel.pokemonList().isEmpty
+                self.dataStatusLabel.isHidden = !self.viewModel.displayedPokemonIDs().isEmpty
                 self.dataStatusLabel.text = text
             }
         }
@@ -127,7 +128,7 @@ class HomePageViewController: UIViewController {
 
 extension HomePageViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.pokemonList().count
+        return viewModel.displayedPokemonIDs().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -140,9 +141,15 @@ extension HomePageViewController: UICollectionViewDataSource {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokemonGridCell", for: indexPath) as! PokemonCollectionViewCell
         }
         
-        viewModel.pokemonList(at: indexPath.row) { pokemon in
+        guard indexPath.row < viewModel.displayedPokemonIDs().count else { return cell }
+        let pokemonID = viewModel.displayedPokemonIDs()[indexPath.row]
+        cell.isEnabled = false
+        cell.configure(id: pokemonID, name: appManager.pokemonIDToNameMap[pokemonID] ?? "")
+        
+        viewModel.getDisplayedPokemon(at: indexPath.row) { pokemon in
             guard let pokemon = pokemon else { return }
             DispatchQueue.main.async {
+                cell.isEnabled = true
                 cell.configure(id: pokemon.id, name: pokemon.name, types: pokemon.types, imageUrl: pokemon.spritesImageUrl)
             }
         }
@@ -153,7 +160,10 @@ extension HomePageViewController: UICollectionViewDataSource {
 
 extension HomePageViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.pokemonList(at: indexPath.row) { [weak self] pokemon in
+//        let cell = collectionView.cellForItem(at: indexPath) as! PokemonCollectionViewCell
+//        guard cell.isEnabled else { return }
+        
+        viewModel.getDisplayedPokemon(at: indexPath.row) { [weak self] pokemon in
             guard let self = self, let pokemon = pokemon else { return }
             
             DispatchQueue.main.async {

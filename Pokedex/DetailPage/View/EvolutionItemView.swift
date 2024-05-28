@@ -31,20 +31,12 @@ class EvolutionItemView: UIView {
     func configure(name: String) {
         nameLabel.text = name
         
-        if let pokemon = appManager.getPokemonWith(name: name) {
-            self.pokemon = pokemon
-            if let url = URL(string: pokemon.spritesImageUrl) {
-                appManager.setPokemonImage(for: imageView, with: url)
-            }
-        } else {
-            apiManager.fetchPokemonDetail(for: name) { [weak self] pokemon in
-                if let pokemon = pokemon {
-                    self?.pokemon = pokemon
-                    if let url = URL(string: pokemon.spritesImageUrl) {
-                        if let imageView = self?.imageView {
-                            appManager.setPokemonImage(for: imageView, with: url)
-                        }
-                    }
+        appManager.getPokemonDetailWith(for: name) { [weak self] pokemon in
+            guard let self = self else { return }
+            if let pokemon = pokemon {
+                self.pokemon = pokemon
+                if let url = URL(string: pokemon.spritesImageUrl) {
+                    appManager.setPokemonImage(for: self.imageView, with: url)
                 }
             }
         }
